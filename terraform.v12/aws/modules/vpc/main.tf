@@ -52,7 +52,7 @@ resource "aws_internet_gateway" "igw" {
 # Public Subnets
 
 resource "aws_subnet" "public-subnets" {
-  count                   = var.enabled && length(data.aws_availability_zones.azs.names) > 0 ? length(data.aws_availability_zones.azs.names) : 0
+  count                   = var.enabled && length(var.vpc-public-subnet-cidr) > 0 ? length(var.vpc-public-subnet-cidr) : 0
   availability_zone       = data.aws_availability_zones.azs.names[count.index]
   cidr_block              = var.vpc-public-subnet-cidr[count.index]
   vpc_id                  = aws_vpc.vpc[0].id
@@ -79,7 +79,7 @@ resource "aws_route_table" "public-routes" {
 # Associate/Link Public-Route With Public-Subnets
 
 resource "aws_route_table_association" "public-association" {
-  count          = var.enabled && length(data.aws_availability_zones.azs.names) > 0 ? length(data.aws_availability_zones.azs.names) : 0
+  count          = var.enabled && length(var.vpc-public-subnet-cidr) > 0 ? length(var.vpc-public-subnet-cidr) : 0
   route_table_id = aws_route_table.public-routes.id
   subnet_id      = aws_subnet.public-subnets.*.id[count.index]
 }
@@ -121,7 +121,7 @@ resource "aws_nat_gateway" "ngw" {
 # Private Route-Table For Private-Subnets
 
 resource "aws_route_table" "private-routes" {
-  count  = var.enabled && length(data.aws_availability_zones.azs.names) > 0 ? length(data.aws_availability_zones.azs.names) : 0
+  count  = var.enabled && length(var.vpc-private-subnet-cidr) > 0 ? length(var.vpc-private-subnet-cidr) : 0
   vpc_id = aws_vpc.vpc[0].id
   route {
     cidr_block     = var.private-route-cidr
@@ -136,7 +136,7 @@ resource "aws_route_table" "private-routes" {
 # Associate/Link Private-Routes With Private-Subnets
 
 resource "aws_route_table_association" "private-routes-linking" {
-  count          = var.enabled && length(data.aws_availability_zones.azs.names) > 0 ? length(data.aws_availability_zones.azs.names) : 0
+  count          = var.enabled && length(var.vpc-private-subnet-cidr) > 0 ? length(var.vpc-private-subnet-cidr) : 0
   subnet_id      = aws_subnet.private-subnets.*.id[count.index]
   route_table_id = aws_route_table.private-routes.*.id[count.index]
 }
@@ -171,7 +171,7 @@ resource "aws_db_subnet_group" "database" {
 # Database Route-Table For Database-Subnets
 
 resource "aws_route_table" "database-routes" {
-  count  = var.enabled && var.create_database_subnet_group && length(data.aws_availability_zones.azs.names) > 0 ? length(data.aws_availability_zones.azs.names) : 0
+  count  = var.enabled && var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
   vpc_id = aws_vpc.vpc[0].id
   route {
     cidr_block     = var.private-route-cidr
@@ -186,7 +186,7 @@ resource "aws_route_table" "database-routes" {
 
 # Associate/Link Database-Routes With Database-Subnets
 resource "aws_route_table_association" "database-routes-association" {
-  count =  var.enabled && var.create_database_subnet_group && length(data.aws_availability_zones.azs.names) > 0 ? length(data.aws_availability_zones.azs.names) : 0
-  subnet_id = aws_subnet.database.*.id[count.index]
-  route_table_id = aws_route_table.database-routes.*.id[count.index]
+  count =  var.enabled && var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
+  subnet_id = "${element(aws_subnet.database.*.id,count.index )}"
+  route_table_id = "${element(aws_route_table.database-routes.*.id,count.index )}"
 }

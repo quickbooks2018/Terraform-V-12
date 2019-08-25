@@ -144,6 +144,7 @@ variable "private-subnet-name" {
 
 data "aws_availability_zones" "azs" {}
 
+
 # Database Subnets
 
 # list of database subnets
@@ -165,7 +166,7 @@ variable "db-routes-name" {
 
 variable "create_database_subnet_group" {
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "db-subnets-group-name" {
