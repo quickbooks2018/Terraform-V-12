@@ -106,5 +106,20 @@ module "sg4" {
   vpc_id                  = module.vpc.vpc-id
 }
 
+module "ec2" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "cloudelligent"
+  stage                         = "dev"
+  name                          = "ec2"
+  key_name                      = "ec2-v12"
+  public_key                    = file("../../modules/secrets/ec2-v12.pub")
+  instance_count                = 2
+  ami                           = "ami-010fae13a16763bb4"
+  instance_type                 = "t3a.micro"
+  associate_public_ip_address   = "true"
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg2.aws_security_group_default,module.sg1.aws_security_group_default]
+}
+
 
 

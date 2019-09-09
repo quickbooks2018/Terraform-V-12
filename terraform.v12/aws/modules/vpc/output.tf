@@ -2,8 +2,9 @@
 
 output "vpc-id" {
   description = "The ID of the VPC"
-  value       = aws_vpc.vpc.*.id
+  value       = concat(aws_vpc.vpc.*.id, [""])[0]
 }
+
 
 # Output of IGW
 
