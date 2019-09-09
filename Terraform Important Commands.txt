@@ -11,7 +11,7 @@ c terraform apply
 
 4.terraform plan -target=module.cloudelligent-vpc ---> only plan specific modules
 
-5.terraform apply -target=module.cloudelligent-vpc ---> only apply specific modules
+5.terraform apply -target=module.cloudelligent-vpc -auto-approve ---> only apply specific modules
 
 6.terraform state pull----> ok
 
