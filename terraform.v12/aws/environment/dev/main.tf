@@ -89,19 +89,19 @@ module "sg3" {
   namespace           = "cloudelligent"
   stage               = "dev"
   name                = "PriTunl"
-  udp_ports           = "15303"
+  udp_ports           = "13101"
   cidrs               = ["0.0.0.0/0"]
   security_group_name = "Pritunl"
   vpc_id              = module.vpc.vpc-id
 }
 
 module "sg4" {
-  source                  = "../../modules/aws-sg-ref"
+  source                  = "../../modules/aws-sg-ref-v2"
   namespace               = "cloudelligent"
   stage                   = "dev"
   name                    = "PriTunl-Ref"
-  tcp_ports               = "22"
-  ref_security_groups_ids = module.sg3.aws_security_group_default
+  tcp_ports               = "22,443"
+  ref_security_groups_ids = [module.sg3.aws_security_group_default,module.sg2.aws_security_group_default]
   security_group_name     = "Pritunl-Ref"
   vpc_id                  = module.vpc.vpc-id
 }
@@ -123,6 +123,18 @@ module "sg5" {
 
 }
 
+module "sg6" {
+  source                  = "../../modules/aws-sg-ref"
+  namespace               = "cloudelligent"
+  stage                   = "dev"
+  name                    = "Testing-Ref"
+  tcp_ports               = "22,433"
+  ref_security_groups_ids = module.sg3.aws_security_group_default
+  security_group_name     = "Testing-Ref"
+  vpc_id                  = module.vpc.vpc-id
+}
+
+
 module "ec2" {
   source                        = "../../modules/aws-ec2"
   namespace                     = "cloudelligent"
@@ -130,7 +142,6 @@ module "ec2" {
   name                          = "ec2"
   key_name                      = "ec2-v12"
   public_key                    = file("../../modules/secrets/ec2-v12.pub")
-  user_data                     = file("../../modules/aws-ec2/user-data/user-data.sh")
   instance_count                = 2
   ami                           = "ami-010fae13a16763bb4"
   instance_type                 = "t3a.micro"

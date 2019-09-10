@@ -15,12 +15,11 @@ module "label" {
 
 
 
-
 resource "aws_security_group" "default" {
   name        = var.security_group_name
   description = "${var.security_group_name} group managed by Terraform"
-  vpc_id = var.vpc_id
-  tags = module.label.tags
+  vpc_id      = var.vpc_id
+  tags        = module.label.tags
 }
 
 resource "aws_security_group_rule" "egress" {
@@ -39,7 +38,7 @@ resource "aws_security_group_rule" "tcp" {
   from_port         = split(",", var.tcp_ports)[count.index]
   to_port           = split(",", var.tcp_ports)[count.index]
   protocol          = "tcp"
-  cidr_blocks       =  var.cidrs
+  source_security_group_id = distinct(compact(concat([var.ref_security_groups_id], var.ref_security_groups_ids)))[count.index]
   description       = ""
   security_group_id = aws_security_group.default.id
 }
@@ -50,7 +49,7 @@ resource "aws_security_group_rule" "udp" {
   from_port         = split(",", var.udp_ports)[count.index]
   to_port           = split(",", var.udp_ports)[count.index]
   protocol          = "udp"
-  cidr_blocks       = var.cidrs
+  source_security_group_id = distinct(compact(concat([var.ref_security_groups_id], var.ref_security_groups_ids)))[count.index]
   description       = ""
   security_group_id = aws_security_group.default.id
 }
