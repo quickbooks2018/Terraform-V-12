@@ -89,7 +89,7 @@ module "sg3" {
   namespace           = "cloudelligent"
   stage               = "dev"
   name                = "PriTunl"
-  udp_ports           = "13101"
+  udp_ports           = "15303"
   cidrs               = ["0.0.0.0/0"]
   security_group_name = "Pritunl"
   vpc_id              = module.vpc.vpc-id
@@ -130,6 +130,7 @@ module "ec2" {
   name                          = "ec2"
   key_name                      = "ec2-v12"
   public_key                    = file("../../modules/secrets/ec2-v12.pub")
+  user_data                     = file("../../modules/aws-ec2/user-data/user-data.sh")
   instance_count                = 2
   ami                           = "ami-010fae13a16763bb4"
   instance_type                 = "t3a.micro"
