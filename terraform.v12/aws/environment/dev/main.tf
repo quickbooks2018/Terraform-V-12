@@ -106,6 +106,23 @@ module "sg4" {
   vpc_id                  = module.vpc.vpc-id
 }
 
+
+module "sg5" {
+  source = "../../modules/aws-sg-cidr-v2"
+  namespace                     = "cloudelligent"
+  stage                         = "dev"
+  name                          = "ec2"
+  security_group_name           = "ec2"
+  vpcID                         = module.vpc.vpc-id
+  ServicePorts                  = {
+    http             = 80
+    https            = 443
+  }
+
+  cidr                          = "0.0.0.0/0"
+
+}
+
 module "ec2" {
   source                        = "../../modules/aws-ec2"
   namespace                     = "cloudelligent"
