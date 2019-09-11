@@ -100,8 +100,8 @@ module "sg4" {
   namespace               = "cloudelligent"
   stage                   = "dev"
   name                    = "PriTunl-Ref"
-  tcp_ports               = "22,443"
-  ref_security_groups_ids = [module.sg3.aws_security_group_default,module.sg2.aws_security_group_default]
+  tcp_ports               = "22,443,3306"
+  ref_security_groups_ids = [module.sg3.aws_security_group_default,module.sg3.aws_security_group_default,module.sg3.aws_security_group_default]
   security_group_name     = "Pritunl-Ref"
   vpc_id                  = module.vpc.vpc-id
 }

@@ -38,7 +38,7 @@ resource "aws_security_group_rule" "tcp" {
   from_port         = split(",", var.tcp_ports)[count.index]
   to_port           = split(",", var.tcp_ports)[count.index]
   protocol          = "tcp"
-  source_security_group_id = distinct(compact(concat([var.ref_security_groups_id], var.ref_security_groups_ids)))[count.index]
+  source_security_group_id = (compact(concat([var.ref_security_groups_id], var.ref_security_groups_ids)))[count.index]
   description       = ""
   security_group_id = aws_security_group.default.id
 }
