@@ -89,7 +89,8 @@ module "sg3" {
   namespace           = "cloudelligent"
   stage               = "dev"
   name                = "PriTunl"
-  udp_ports           = "13101"
+  udp_ports           = "12323"
+  tcp_ports           = "80,443"
   cidrs               = ["0.0.0.0/0"]
   security_group_name = "Pritunl"
   vpc_id              = module.vpc.vpc-id
@@ -100,7 +101,7 @@ module "sg4" {
   namespace               = "cloudelligent"
   stage                   = "dev"
   name                    = "PriTunl-Ref"
-  tcp_ports               = "22,443,3306"
+  tcp_ports               = "22,80,443"
   ref_security_groups_ids = [module.sg3.aws_security_group_default,module.sg3.aws_security_group_default,module.sg3.aws_security_group_default]
   security_group_name     = "Pritunl-Ref"
   vpc_id                  = module.vpc.vpc-id
@@ -149,6 +150,25 @@ module "ec2" {
   subnet_ids                    = module.vpc.public-subnet-ids
   vpc_security_group_ids        = [module.sg2.aws_security_group_default,module.sg1.aws_security_group_default]
 }
+
+module "ec2-pritunl" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "cloudelligent"
+  stage                         = "dev"
+  name                          = "ec2"
+  key_name                      = "ec2-v12"
+  public_key                    = file("../../modules/secrets/ec2-v12.pub")
+  user_data                     = file("../../modules/aws-ec2/user-data/user-data.sh")
+  instance_count                = 1
+  ami                           = "ami-010fae13a16763bb4"
+  instance_type                 = "t3a.micro"
+  associate_public_ip_address   = "true"
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg3.aws_security_group_default,module.sg4.aws_security_group_default]
+}
+
+
+
 
 
 
