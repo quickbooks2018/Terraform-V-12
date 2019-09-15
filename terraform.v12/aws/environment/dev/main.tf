@@ -15,11 +15,11 @@ module "vpc" {
   stage                               = "dev"
   map_public_ip_on_launch             = "true"
   total-nat-gateway-required          = "1"
-  create_database_subnet_group        = "false"
+  create_database_subnet_group        = "true"
   vpc-cidr                            = "10.11.0.0/16"
   vpc-public-subnet-cidr              = ["10.11.1.0/24","10.11.2.0/24","10.11.3.0/24"]
   vpc-private-subnet-cidr             = ["10.11.4.0/24","10.11.5.0/24","10.11.6.0/24"]
- # vpc-database_subnets-cidr           = ["10.11.7.0/24", "10.11.8.0/24"]
+  vpc-database_subnets-cidr           = ["10.11.7.0/24", "10.11.8.0/24"]
 }
 
 
@@ -35,9 +35,9 @@ module "vgw" {
 
 module "cgw" {
   source = "../../modules/aws-cgw"
-  namespace                       = "cloudelligent"
-  stage                           = "dev"
-  name                            = "cgw"
+  namespace                         = "cloudelligent"
+  stage                             = "dev"
+  name                              = "cgw"
   customer-gateway-static-public-ip = "119.153.177.80"
 }
 
@@ -76,7 +76,7 @@ module "sg2" {
   namespace                   = "cloudelligent"
   stage                       = "dev"
   name                        = "Web-Ref"
-  tcp_ports                   = "22"
+  tcp_ports                   = "22,3306"
   ref_security_groups_ids     =  module.sg1.aws_security_group_default
   security_group_name         = "Web-Ref"
   vpc_id                      = module.vpc.vpc-id
@@ -116,8 +116,8 @@ module "sg5" {
   security_group_name           = "ec2"
   vpcID                         = module.vpc.vpc-id
   ServicePorts                  = {
-    http             = 80
-    https            = 443
+    http                        = 80
+    https                       = 443
   }
 
   cidr                          = "0.0.0.0/0"
@@ -167,6 +167,30 @@ module "ec2-pritunl" {
   vpc_security_group_ids        = [module.sg3.aws_security_group_default,module.sg4.aws_security_group_default]
 }
 
+module "rds-mysql" {
+  source                                                           = "../../modules/aws-rds-mysql"
+  namespace                                                        = "cloudelligent"
+  stage                                                            = "dev"
+  name                                                             = "wordpress-db"
+  rds-name                                                         = "wordpress-db"
+  final-snapshot-identifier                                        = "cloudeligent-db-final-snap-shot"
+  skip-final-snapshot                                              = "true"
+  rds-allocated-storage                                            = "5"
+  storage-type                                                     = "gp2"
+  rds-engine                                                       = "mysql"
+  engine-version                                                   = "5.7.17"
+  db-instance-class                                                = "db.t2.micro"
+  backup-retension-period                                          = "0"
+  backup-window                                                    = "04:00-06:00"
+  publicly-accessible                                              = "false"
+  rds-username                                                     = "demo"
+  rds-password                                                     = var.rds_admin_password
+  multi-az                                                         = "true"
+  storage-encrypted                                                = "false"
+  deletion-protection                                              = "false"
+  vpc-security-group-ids                                           = [module.sg2.aws_security_group_default]
+  subnet_ids                                                       = module.vpc.database_subnets
+}
 
 
 

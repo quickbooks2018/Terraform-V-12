@@ -45,11 +45,11 @@ variable "vpc-id" {
 }
 
 variable "vgw-public-route-table-id" {
-  type = "list"
+  type = list(string)
 }
 
 variable "vgw-private-route-table-id" {
-  type = "list"
+  type = list(string)
 }
 
 
