@@ -143,12 +143,19 @@ module "ec2" {
   name                          = "ec2"
   key_name                      = "ec2-v12"
   public_key                    = file("../../modules/secrets/ec2-v12.pub")
-  instance_count                = 2
-  ami                           = "ami-010fae13a16763bb4"
+  instance_count                = 1
+  ami                           = "ami-00aa4671cbf840d82"
   instance_type                 = "t3a.micro"
   associate_public_ip_address   = "true"
   subnet_ids                    = module.vpc.public-subnet-ids
   vpc_security_group_ids        = [module.sg2.aws_security_group_default,module.sg1.aws_security_group_default]
+  iam_instance_profile          = module.instance-profile.instance-profile-name
+}
+
+module "instance-profile" {
+  source = "../../modules/aws-instance-profile"
+  instance_profile = "ec2"
+  iam_role         = module.iam-role-ec2-secret-manager.iam_role_name
 }
 
 module "ec2-pritunl" {
@@ -184,7 +191,7 @@ module "rds-mysql" {
   backup-window                                                    = "04:00-06:00"
   publicly-accessible                                              = "false"
   rds-username                                                     = "demo"
-  rds-password                                                     = var.rds_admin_password
+  rds-password                                                     = var.rds-secret
   multi-az                                                         = "true"
   storage-encrypted                                                = "false"
   deletion-protection                                              = "false"
@@ -192,7 +199,60 @@ module "rds-mysql" {
   subnet_ids                                                       = module.vpc.database_subnets
 }
 
+module "key-pair" {
+  source = "../../modules/aws-ec2-keypair"
+  namespace                       = "cloudelligent"
+  stage                           = "dev"
+  name                            = "ec2-keypair"
+  region                          = "eu-central-1"
+  key-name                        = "cloudelligent-dev-admin"
+  public-key                      = file("../../modules/secrets/ec2-v12.pub")
+}
+
+module "iam-role-ec2-secret-manager" {
+  source = "../../modules/aws-iam-role"
+  namespace                       = "cloudelligent"
+  stage                           = "dev"
+  name                            = "ec2-assume-role"
+  iam-role-name                   = "ec2-secret-manager-role"
+  policy-name                     = "Secret-Manager"
+  policy                          = file("../../modules/aws-policies/ec2-secret-manager-policy.json")
+}
+
+module "iam-user-1" {
+  source = "../../modules/aws-iam-user"
+  namespace                       = "cloudelligent"
+  stage                           = "dev"
+  name                            = "asim-arain"
+  user-name                       = "asim-arain"
+  policy-name                     = "cloudelligent-dev-bucket-policy"
+  iam-user-policy                 = file("../../modules/aws-policies/iam-user-s3-policy.json")
+}
 
 
+module "kms_rds-mysql_key" {
+  source                  = "../../modules/aws-kms"
+  namespace               = "cloudelligent"
+  stage                   = "dev"
+  name                    = "rds-mysql-key"
+  deletion_window_in_days = "10"
+}
+
+
+module "rds_secret" {
+  source               = "../../modules/aws-secret-manager"
+  namespace            = "cloudelligent"
+  stage                = "dev"
+  name                 = "Mysql_Password"
+  secret-string         = {
+    username             = "demo"
+    password             = var.rds-secret
+    engine               = "mysql"
+    host                 = "wordpress-db.ci6ifuaz6osi.eu-central-1.rds.amazonaws.com"
+    port                 = "3306"
+    dbInstanceIdentifier = "wordpress-db"
+  }
+  kms_key_id             = ""
+}
 
 

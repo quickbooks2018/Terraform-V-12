@@ -1,1 +1,1 @@
-variable "rds_admin_password" { type = string }
+variable "rds-secret" { type = string }
