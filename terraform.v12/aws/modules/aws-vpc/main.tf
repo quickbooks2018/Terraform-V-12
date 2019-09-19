@@ -146,7 +146,7 @@ resource "aws_route_table_association" "private-routes-linking" {
 # Database subnet
 ##################
 resource "aws_subnet" "database" {
-  count = var.enabled && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
+  count = var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
   cidr_block = var.vpc-database_subnets-cidr[count.index]
   vpc_id = aws_vpc.vpc[0].id
   availability_zone = data.aws_availability_zones.azs.names[count.index]
@@ -160,7 +160,7 @@ resource "aws_db_subnet_group" "database" {
 
   name        = lower(module.label.id)
   description = "Database subnet group for ${module.label.id}"
-  count = var.enabled && length(var.vpc-database_subnets-cidr) > 0 && var.create_database_subnet_group ? 1 : 0
+  count = var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 && var.create_database_subnet_group ? 1 : 0
   subnet_ids = aws_subnet.database.*.id
 
   tags = {
@@ -171,7 +171,7 @@ resource "aws_db_subnet_group" "database" {
 # Database Route-Table For Database-Subnets
 
 resource "aws_route_table" "database-routes" {
-  count  = var.enabled && var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
+  count  = var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
   vpc_id = aws_vpc.vpc[0].id
   route {
     cidr_block     = var.private-route-cidr
@@ -186,7 +186,7 @@ resource "aws_route_table" "database-routes" {
 
 # Associate/Link Database-Routes With Database-Subnets
 resource "aws_route_table_association" "database-routes-association" {
-  count =  var.enabled && var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
+  count =  var.create_database_subnet_group && var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 ? length(var.vpc-database_subnets-cidr) : 0
   subnet_id = "${element(aws_subnet.database.*.id,count.index )}"
   route_table_id = "${element(aws_route_table.database-routes.*.id,count.index )}"
 }

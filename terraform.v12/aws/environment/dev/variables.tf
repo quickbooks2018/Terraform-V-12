@@ -1,1 +1,1 @@
-variable "rds-secret" { type = string }
+#variable "rds-secret" { type = string }
