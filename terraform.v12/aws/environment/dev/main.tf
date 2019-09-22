@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "eu-central-1"
 }
 
 #####
@@ -9,7 +9,7 @@ provider "aws" {
 module "vpc" {
   source = "../../modules/aws-vpc"
 
-  vpc-location                        = "Oregon"
+  vpc-location                        = "Frankfurt"
   namespace                           = "cloudelligent"
   name                                = "vpc"
   stage                               = "dev"
@@ -256,3 +256,101 @@ module "rds_secret" {
 }
 
 
+module "ec2-postgresql-master" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "cloudelligent"
+  stage                         = "dev"
+  name                          = "ec2-postgresql-master"
+  key_name                      = "ec2-v12"
+  public_key                    = file("../../modules/secrets/ec2-v12.pub")
+  instance_count                = 1
+  ami                           = "ami-00aa4671cbf840d82"
+  instance_type                 = "t3a.micro"
+  associate_public_ip_address   = "true"
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg2.aws_security_group_default,module.sg1.aws_security_group_default]
+  ebs_block_device              = [
+    {
+      device_name = "/dev/sdb"
+      volume_type = "gp2"
+      volume_size = 5
+      delete_on_termination = "false"
+
+    }
+  ]
+
+   root_block_device = [
+   {
+       volume_type = "gp2"
+        volume_size = 10
+    }
+]
+
+
+}
+
+
+
+module "ec2-postgresql-slave1" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "cloudelligent"
+  stage                         = "dev"
+  name                          = "ec2-postgresql-slave1"
+  key_name                      = "ec2-v12"
+  public_key                    = file("../../modules/secrets/ec2-v12.pub")
+  instance_count                = 1
+  ami                           = "ami-00aa4671cbf840d82"
+  instance_type                 = "t3a.micro"
+  associate_public_ip_address   = "true"
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg2.aws_security_group_default,module.sg1.aws_security_group_default]
+  ebs_block_device              = [
+    {
+      device_name = "/dev/sdb"
+      volume_type = "gp2"
+      volume_size = 5
+      delete_on_termination = "false"
+
+    }
+  ]
+
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 10
+    }
+  ]
+
+}
+
+module "ec2-postgresql-slave2" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "cloudelligent"
+  stage                         = "dev"
+  name                          = "ec2-postgresql-slave2"
+  key_name                      = "ec2-v12"
+  public_key                    = file("../../modules/secrets/ec2-v12.pub")
+  instance_count                = 1
+  ami                           = "ami-00aa4671cbf840d82"
+  instance_type                 = "t3a.micro"
+  associate_public_ip_address   = "true"
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg2.aws_security_group_default,module.sg1.aws_security_group_default]
+  ebs_block_device              = [
+    {
+      device_name = "/dev/sdb"
+      volume_type = "gp2"
+      volume_size = 5
+      delete_on_termination = "false"
+
+    }
+  ]
+
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 10
+    }
+  ]
+
+}
