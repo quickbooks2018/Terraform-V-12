@@ -125,13 +125,13 @@ variable "vpc-cidr" {
 # VPC Public Subnets Cidr Block List
 
 variable "vpc-public-subnet-cidr" {
-  type = "list"
+  type = list(string) 
 }
 
 # VPC Private Subnets Cidr Block List
 
 variable "vpc-private-subnet-cidr" {
-  type = "list"
+  type = list(string) 
 }
 
 # Private Subnets Tags
