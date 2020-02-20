@@ -1,0 +1,24 @@
+# https://github.com/diodonfrost/terraform-aws-lambda-nuke/blob/2.6.0/examples/test_fixture/main.tf
+
+# https://registry.terraform.io/modules/diodonfrost/lambda-nuke/aws/2.1.1
+
+
+
+
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+
+module "nuke_everything_older_than_1d" {
+  source                         = "diodonfrost/lambda-nuke/aws"
+  name                           = "nuke_everything"
+  cloudwatch_schedule_expression = "cron(0 00 ? * MON-SUN *)"
+  exclude_resources              = "iam"
+  older_than                     = "1d"
+}
+
+terraform {
+  required_version = ">= 0.12"
+}
