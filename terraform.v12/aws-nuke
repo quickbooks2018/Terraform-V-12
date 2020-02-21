@@ -1,29 +1,42 @@
-# https://github.com/diodonfrost/terraform-aws-lambda-nuke/blob/2.6.0/examples/test_fixture/main.tf
-
-# https://registry.terraform.io/modules/diodonfrost/lambda-nuke/aws/2.1.1
-
-# https://github.com/rebuy-de/aws-nuke  ---> wip
 
 
-### Mentioned below is not giving the desired outputs ###
+# https://github.com/rebuy-de/aws-nuke  
+# https://github.com/rebuy-de/aws-nuke/releases
 
 
 
+aws-nuke-v2.14.0-linux-amd64 -c config.yml --profile default --no-dry-run
 
 
-provider "aws" {
-  region = "us-east-1"
-}
 
+config.yml
+---
+regions:
+  - "us-east-1"
+  - "us-east-2"
+  - "us-west-1"
+  - "us-west-2"
+  - "ap-east-1"
+  - "ap-south-1"
+  - "ap-north-east-2"
+  - "ap-south-east-1"
+  - "ap-south-east-2"
+  - "ap-northeast-1"
+  - "ca-central-1"
+  - "eu-central-1"
+  - "eu-west-1"
+  - "eu-west-2"
+  - "eu-west-3"
+  - "eu-north-1"
+  - "me-south-1"
+  - "sa-east-1"
+account-blacklist:
+- 1234567890
 
-module "nuke_everything_older_than_1d" {
-  source                         = "diodonfrost/lambda-nuke/aws"
-  name                           = "nuke_everything"
-  cloudwatch_schedule_expression = "cron(0 00 ? * MON-SUN *)"
-  exclude_resources              = "iam"
-  older_than                     = "1d"
-}
+resource-types:
+  # don't nuke IAM users
+  excludes:
+  - IAMUser
 
-terraform {
-  required_version = ">= 0.12"
-}
+accounts:
+  PUT-YOUR-ACCOUNT-NUMBER-HERE-FOR-DESTRUCTION: {}
