@@ -27,6 +27,7 @@ resource "aws_vpc" "vpc" {
     Location = var.vpc-location
     "kubernetes.io/cluster/${var.cluster-name}" = "shared"
 
+
   }
 }
 
@@ -62,6 +63,7 @@ resource "aws_subnet" "public-subnets" {
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.public-subnets-name}-${count.index + 1}"
     "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+    "kubernetes.io/role/elb"  = "1"
   }
 }
 
@@ -99,6 +101,7 @@ resource "aws_subnet" "private-subnets" {
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.private-subnet-name}-${count.index + 1}"
     "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 
@@ -161,6 +164,7 @@ resource "aws_subnet" "database" {
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.db-subnets-name}-${count.index + 1}"
     "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+    "kubernetes.io/role/internal-elb" = "1"
   }
 }
 

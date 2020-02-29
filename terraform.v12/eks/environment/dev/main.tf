@@ -1,11 +1,11 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "us-east-1"
 }
 
 
 module "vpc" {
   source = "../../modules/vpc"
-  vpc-location                        = "Oregon"
+  vpc-location                        = "Virginia"
   namespace                           = "cloudelligent"
   name                                = "vpc"
   stage                               = "dev"
