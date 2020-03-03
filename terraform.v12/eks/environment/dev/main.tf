@@ -53,7 +53,7 @@ module "eks_cluster" {
   namespace                    = "cloudelligent"
   stage                        = "dev"
   name                         = "eks"
-  region                       = "us-west-2"
+  region                       = "us-east-1"
   vpc_id                       = module.vpc.vpc-id
   subnet_ids                   = module.vpc.public-subnet-ids
   kubernetes_version           = "1.14"
