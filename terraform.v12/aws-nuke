@@ -40,3 +40,21 @@ resource-types:
 
 accounts:
   PUT-YOUR-ACCOUNT-NUMBER-HERE-FOR-DESTRUCTION: {}
+
+
+
+
+##### Terraform ####
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+
+module "nuke-everything" {
+  source                         = "diodonfrost/lambda-nuke/aws"
+  name                           = "nuke-everything" 
+  cloudwatch_schedule_expression = "cron(0 22 ? * MON-FRI *)"
+  exclude_resources              = "iam"
+  older_than                     = "0d"
+}
