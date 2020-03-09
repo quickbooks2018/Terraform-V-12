@@ -46,6 +46,13 @@ accounts:
 
 ##### Terraform ####
 
+# https://registry.terraform.io/modules/diodonfrost
+
+# https://registry.terraform.io/modules/diodonfrost/lambda-nuke/aws/2.8.0
+
+# https://github.com/diodonfrost/terraform-aws-lambda-nuke
+
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -54,7 +61,7 @@ provider "aws" {
 module "nuke-everything" {
   source                         = "diodonfrost/lambda-nuke/aws"
   name                           = "nuke-everything" 
-  cloudwatch_schedule_expression = "cron(0 22 ? * MON-FRI *)"
+  cloudwatch_schedule_expression = "cron(0 22 ? * MON-SUN *)"
   exclude_resources              = "iam"
   older_than                     = "0d"
 }
