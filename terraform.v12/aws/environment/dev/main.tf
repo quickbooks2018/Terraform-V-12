@@ -136,6 +136,55 @@ module "sg6" {
 }
 
 
+module "sg7" {
+  source = "../../modules/aws-sg-requirement"
+  security_group_name        = "required-sg"
+  vpc_id                     =  module.vpc.vpc-id
+
+  # Rule-1
+  ingress-rule-1-from-port        = 22
+  ingress-rule-1-to-port          = 22
+  ingress-rule-1-protocol         = "tcp"
+  ingress-rule-1-cidrs            = ["111.111.192.47/32"]
+  ingress-rule-1-description      = "Probitra Premises"
+
+  # Rule-2
+  ingress-rule-2-from-port          = 945
+  ingress-rule-2-to-port            = 945
+  ingress-rule-2-protocol           = "tcp"
+  ingress-rule-2-security-groups    = ["sg-02d3516f5a0e53aa6"]
+  ingress-rule-2-description        = "Ingress Rule"
+
+  # Rule-3
+  ingress-rule-3-from-port          = 8190
+  ingress-rule-3-to-port            = 8190
+  ingress-rule-3-protocol           = "tcp"
+  ingress-rule-3-cidrs              = ["0.0.0.0/0"]
+  ingress-rule-3-description        = "Ingress Rule"
+
+  # Rule-4
+  ingress-rule-4-from-port          = 443
+  ingress-rule-4-to-port            = 443
+  ingress-rule-4-protocol           = "tcp"
+  ingress-rule-4-cidrs              = ["111.226.111.34/32","115.111.112.17/32","181.111.84.111/32","616.111.188.211/32"]
+  ingress-rule-4-description       = "Allowed IPs"
+
+  # Rule-5
+  ingress-rule-5-from-port         = 443
+  ingress-rule-5-to-port           = 443
+  ingress-rule-5-protocol          = "tcp"
+  ingress-rule-5-security-groups   = ["sg-02d3516f5a0e53aa6"]
+  ingress-rule-5-description       = "Ingress-Rule"
+
+  # Rule-6
+  ingress-rule-6-from-port        = -1
+  ingress-rule-6-to-port          = -1
+  ingress-rule-6-protocol         = "icmp"
+  ingress-rule-6-security-groups  = ["sg-02d3516f5a0e53aa6"]
+  ingress-rule-6-description      = "Icmp Allowed"
+}
+
+
 module "ec2" {
   source                        = "../../modules/aws-ec2"
   namespace                     = "cloudelligent"
