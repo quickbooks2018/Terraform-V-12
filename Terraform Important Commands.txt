@@ -33,6 +33,15 @@ c terraform apply
 
 12. ssh-keygen -y -f terraform.pem > terraform.pub
 
+13. terraform apply -var-file=dmz.tfvars
+
+14. terraform destroy -var-file=dmz.tfvars
+
+15. terraform import -var-file=dmz.tfvars module.sg7.aws_security_group.security_group sg-00afc6e255cc55387 
+
+16. terraform plan -var-file=secrets.tfvars -var-file=dmz.tfvars -target=module.directory-service -out plan
+
+
 
 #############################################################################################################
 
