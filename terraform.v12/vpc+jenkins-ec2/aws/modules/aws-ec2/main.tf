@@ -42,6 +42,10 @@ resource "aws_instance" "this" {
   get_password_data      = var.get_password_data
   vpc_security_group_ids = var.vpc_security_group_ids
   iam_instance_profile   = var.iam_instance_profile
+  root_block_device      {
+    volume_size           = var.root_volume_size
+    volume_type           = var.root_volume_type
+  }
 
   associate_public_ip_address = var.associate_public_ip_address
   private_ip                  = length(var.private_ips) > 0 ? var.private_ips[count.index] : var.private_ip

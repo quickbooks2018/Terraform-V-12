@@ -64,7 +64,9 @@ module "ec2-jenkins" {
   ami                           = "ami-0fc61db8544a617ed"
   instance_type                 = "t3a.medium"
   associate_public_ip_address   = "true"
+  root_volume_size              = 40
   subnet_ids                    = module.vpc.public-subnet-ids
   vpc_security_group_ids        = [module.sg2.aws_security_group_default]
+
 }
 

@@ -187,6 +187,16 @@ variable "root_block_device" {
   default     = []
 }
 
+variable "root_volume_size" {
+  type    = string
+  default = "30"
+}
+
+variable "root_volume_type" {
+  type    = string
+  default = "gp2"
+}
+
 variable "ebs_block_device" {
   description = "Additional EBS block devices to attach to the instance"
   type        = list(map(string))
