@@ -62,6 +62,7 @@ resource "aws_subnet" "public-subnets" {
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.public-subnets-name}-${count.index + 1}"
     "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
   }
 }
 
@@ -99,6 +100,7 @@ resource "aws_subnet" "private-subnets" {
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.private-subnet-name}-${count.index + 1}"
     "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+    "kubernetes.io/role/internal-elb"            = "1"
   }
 }
 
@@ -136,6 +138,7 @@ resource "aws_route_table" "private-routes" {
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.private-route-name}-${count.index + 1}"
     "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+    "kubernetes.io/cluster/${var.cluster-name}" ="kubernetes.io/role/internal-elb"
   }
 
 }
