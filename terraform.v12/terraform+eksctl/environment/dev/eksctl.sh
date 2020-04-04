@@ -34,4 +34,12 @@ eksctl create cluster \
   --ssh-access \
   --ssh-public-key $KEY_NAME
 
+
+
+# UPDATE YOUR ./kube
+################################################################
+### MUST ###
+###---> aws eks update-kubeconfig --name cloudelligent-eks --region us-east-1 <---
+##################################################################
+
 #END
