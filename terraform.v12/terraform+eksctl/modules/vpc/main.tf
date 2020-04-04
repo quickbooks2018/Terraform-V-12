@@ -25,7 +25,6 @@ resource "aws_vpc" "vpc" {
   tags = {
     Name = "${module.label.namespace}-${module.label.name}-${module.label.stage}"
     Location = var.vpc-location
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
 
   }
 }
@@ -41,7 +40,7 @@ resource "aws_internet_gateway" "igw" {
     tags = {
 
       Name = "${module.label.namespace}-${module.label.stage}-${var.internet-gateway-name}"
-      "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+      
 
     }
 
@@ -61,7 +60,6 @@ resource "aws_subnet" "public-subnets" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.public-subnets-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
     "kubernetes.io/role/elb"                      = "1"
   }
 }
@@ -76,7 +74,6 @@ resource "aws_route_table" "public-routes" {
   }
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.public-subnet-routes-name}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
   }
 }
 
@@ -99,7 +96,6 @@ resource "aws_subnet" "private-subnets" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.private-subnet-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
     "kubernetes.io/role/internal-elb"            = "1"
   }
 }
@@ -110,7 +106,6 @@ resource "aws_eip" "eip-ngw" {
   count = var.enabled && var.total-nat-gateway-required > 0 ?  var.total-nat-gateway-required : 0
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.eip-for-nat-gateway-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
   }
 }
 # Creating NAT Gateways In Public-Subnets, Each NAT-Gateway Will Be In Diffrent AZ
@@ -121,7 +116,6 @@ resource "aws_nat_gateway" "ngw" {
   subnet_id     = aws_subnet.public-subnets.*.id[count.index]
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.nat-gateway-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
 
   }
 }
@@ -137,8 +131,6 @@ resource "aws_route_table" "private-routes" {
   }
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.private-route-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
-    "kubernetes.io/cluster/${var.cluster-name}" ="kubernetes.io/role/internal-elb"
   }
 
 }
@@ -163,7 +155,7 @@ resource "aws_subnet" "database" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.db-subnets-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
+    "kubernetes.io/role/internal-elb"            = "1"
   }
 }
 
@@ -176,7 +168,6 @@ resource "aws_db_subnet_group" "database" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.db-subnets-group-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
   }
 }
 
@@ -191,7 +182,6 @@ resource "aws_route_table" "database-routes" {
   }
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.db-routes-name}-${count.index + 1}"
-    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
   }
 
 }
