@@ -25,6 +25,7 @@ resource "aws_vpc" "vpc" {
   tags = {
     Name = "${module.label.namespace}-${module.label.name}-${module.label.stage}"
     Location = var.vpc-location
+    "kubernetes.io/cluster/${var.cluster-name}" = "shared"
 
   }
 }
