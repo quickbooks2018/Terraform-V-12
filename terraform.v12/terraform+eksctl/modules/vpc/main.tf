@@ -43,6 +43,8 @@ resource "aws_internet_gateway" "igw" {
     tags = {
 
       Name = "${module.label.namespace}-${module.label.stage}-${var.internet-gateway-name}"
+      "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+      "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
       
 
     }
@@ -79,6 +81,8 @@ resource "aws_route_table" "public-routes" {
   }
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.public-subnet-routes-name}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
   }
 }
 
@@ -113,6 +117,8 @@ resource "aws_eip" "eip-ngw" {
   count = var.enabled && var.total-nat-gateway-required > 0 ?  var.total-nat-gateway-required : 0
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.eip-for-nat-gateway-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
   }
 }
 # Creating NAT Gateways In Public-Subnets, Each NAT-Gateway Will Be In Diffrent AZ
@@ -123,6 +129,8 @@ resource "aws_nat_gateway" "ngw" {
   subnet_id     = aws_subnet.public-subnets.*.id[count.index]
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.nat-gateway-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
 
   }
 }
@@ -138,6 +146,8 @@ resource "aws_route_table" "private-routes" {
   }
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.private-route-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
     
   }
 
@@ -178,6 +188,8 @@ resource "aws_db_subnet_group" "database" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.db-subnets-group-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
   }
 }
 
@@ -192,6 +204,8 @@ resource "aws_route_table" "database-routes" {
   }
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.db-routes-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
   }
 
 }
