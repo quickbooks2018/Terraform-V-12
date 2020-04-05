@@ -63,6 +63,8 @@ resource "aws_subnet" "public-subnets" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.public-subnets-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
     "kubernetes.io/role/elb"                      = "1"
   }
 }
@@ -99,6 +101,8 @@ resource "aws_subnet" "private-subnets" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.private-subnet-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
     "kubernetes.io/role/internal-elb"            = "1"
   }
 }
@@ -134,6 +138,7 @@ resource "aws_route_table" "private-routes" {
   }
   tags = {
     Name = "${module.label.namespace}-${module.label.stage}-${var.private-route-name}-${count.index + 1}"
+    
   }
 
 }
@@ -158,6 +163,8 @@ resource "aws_subnet" "database" {
 
   tags = {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.db-subnets-name}-${count.index + 1}"
+    "alpha.eksctl.io/cluster-name"                =  var.cluster-name
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
     "kubernetes.io/role/internal-elb"            = "1"
   }
 }
