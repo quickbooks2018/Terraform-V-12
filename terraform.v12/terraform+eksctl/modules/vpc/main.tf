@@ -27,7 +27,8 @@ resource "aws_vpc" "vpc" {
     Location = var.vpc-location
     "kubernetes.io/cluster/${var.cluster-name}"   = "shared"
     "alpha.eksctl.io/cluster-name"                =  var.cluster-name
-    "aws:cloudformation:stack-name"               = "eksctl-${var.cluster-name}"
+    "aws:cloudformation:logical-id"               =  VPC
+    "aws:cloudformation:stack-name"               = "eksctl-${var.cluster-name}-cluster"
     "eksctl.cluster.k8s.io/v1alpha1/cluster-name" =  var.cluster-name
 
   }
