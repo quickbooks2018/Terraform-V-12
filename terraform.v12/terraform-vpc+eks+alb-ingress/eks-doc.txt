@@ -1,0 +1,241 @@
+##################################STEP-1-START#########################################
+
+Setup IAM Role for EKS
+
+EKS_Cloudelligent
+
+
+Custom VPC Setup via Cloudformation
+
+https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-11-07/amazon-eks-vpc-sample.yaml
+
+
+
+
+
+
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
+
+
+1. Installing kubectl
+curl -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/kubectl
+
+chmod +x kubectl
+
+mkdir bin
+
+cp kubectl bin/
+
+
+
+2. Installing AWS IAM authenticator ---> (This allows us to administor our EKS Clustor, using our IAM Identity)
+
+https://github.com/kubernetes-sigs/aws-iam-authenticator
+
+We are using the AWS Version of IAM authenticator ---> https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
+
+curl -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.12.7/2019-03-27/bin/linux/amd64/aws-iam-authenticator
+
+chmod +x ./aws-iam-authenticator
+
+mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
+
+
+3. Now we need to configure kubectl for EKS ---> (make sure you have aws cli version 1.16)
+
+ aws --version
+aws-cli/1.16.102 Python/2.7.14 Linux/4.14.114-105.126.amzn2.x86_64 botocore/1.12.92
+
+Note: Update aws cli using PIP instead of YUM
+
+https://docs.aws.amazon.com/cli/latest/userguide/install-linux.html
+
+
+
+curl -O https://bootstrap.pypa.io/get-pip.py
+
+#Add an export command at the end of your profile script that's similar to the following example.
+export PATH=~/.local/bin:$PATH
+
+# Reload the profile into your current session to put those changes into effect.
+
+source ~/.bash_profile
+
+# Upgrade AWS CLI Version
+pip install awscli --upgrade --user
+
+
+4. Now we need to update our cubeconfig file
+
+# Set aws credentials
+AWS Cli installation
+https://www.osradar.com/install-aws-cli-ubuntu-18-04/
+
+aws configure
+
+Provide your user progmatic credentials
+
+than
+
+update our cubeconfig file
+
+IMPORTANT TO UPDATE YOUR ./kube
+################################################################
+### MUST ###
+---> aws eks update-kubeconfig --name eks-cloudelligent <---
+##################################################################
+https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html
+
+
+Added new context arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent to /root/.kube/config
+
+kubectl config view
+
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://069ED5E1B13D5C06E60F75AFDE032409.sk1.us-west-2.eks.amazonaws.com
+  name: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+contexts:
+- context:
+    cluster: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+    user: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+  name: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+current-context: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+kind: Config
+preferences: {}
+users:
+- name: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1alpha1
+      args:
+      - --region
+      - us-west-2
+      - eks
+      - get-token
+      - --cluster-name
+      - eks-cloudelligent
+      command: aws
+      env: null
+
+
+------------------------------------
+Test Your EKS Cluster
+
+kubectl cluster-info
+
+Kubernetes master is running at https://069ED5E1B13D5C06E60F75AFDE032409.sk1.us-west-2.eks.amazonaws.com
+CoreDNS is running at https://069ED5E1B13D5C06E60F75AFDE032409.sk1.us-west-2.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+
+
+##################################STEP-1-END#########################################
+
+#################################STEP-2-START########################################
+
+# Launching the EKS Worker Nodes
+
+
+https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-11-07/amazon-eks-nodegroup.yaml
+
+
+
+We will be using Cloudformation and we will deploy a stack for our worker nodes.
+
+---> Go to Cloudformation and use this URL to create this stack from the URL ---> https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-11-07/amazon-eks-nodegroup.yaml
+
+Note: For Amazon Optimized AMI ---> https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html
+
+ami-0923e4b35a30a5f53 ---> This is Oregon ---> because we deployed our EKS Cluster ---> eks-cloudelligent    in Oregon.
+
+This is our Bucket automatically created in Oregon for this Cloudformation Template ---> cf-templates-7gd89mj54jv6-us-west-2
+
+These are regular ec2-instances you own and pay for it.
+
+
+---> From Cloudformation go to output section and copy the ARN ---> NodeInstanceRole
+
+#You provisioned the worker nodes from a Cloudformation ---> now time join these nodes ---> Your EKS Cluster ---> We need to apply AWS AUTHENTICATOR configuration map.
+
+arn:aws:iam::898668804275:role/EKS-Cloudelligent-WorkerNodes-NodeInstanceRole-D68SD4Y88L82
+
+curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-11-07/aws-auth-cm.yaml
+
+NOTE: YOUR CLUSTER SECURITY GROUP MUST BE SEPRATE AND YOUR CONTROLLER SECURITY GROUP MUST BE SEPRATE.
+
+# Edit this file ---> replace the ARN ---> from Cloudformation output.
+
+
+kubectl apply -f aws-auth-cm.yaml -----> ARN OF WORKER NODES
+
+
+kubectl get nodes --watch
+
+#################################STEP-2-END########################################
+
+Kubernetes DASH-BOARD
+
+#################################STEP-3-START######################################
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+
+https://github.com/kubernetes/dashboard
+
+########################################################################################################################################
+Installing the Kubernetes Dashboard
+kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+Installing Heapster and InfluxDB
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/rbac/heapster-rbac.yaml
+Create an administrative account and cluster role binding
+kubectl apply -f eks-admin-service-account.yaml
+kubectl apply -f eks-admin-cluster-role-binding.yaml
+Start proxy
+kubectl proxy --address 0.0.0.0 --accept-hosts '.*' &  ---> Use this --->    kubectl proxy  &
+Get a token
+aws-iam-authenticator -i <cluster_name> token
+Log in
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login
+
+
+kubectl proxy  &
+
+netstat -antp
+
+aws-iam-authenticator -i eks-cloudelligent token
+
+yum install -y jq
+
+aws-iam-authenticator -i eks-cloudelligent token | jq -r .status.token
+###########################################################################################################################################
+
+
+
+
+https://github.com/kubernetes/dashboard/issues/3322
+
+kubectl -n kube-system describe pod kubernetes-dashboard
+
+#################################STEP-3-END######################################
+
+
+EKS Important points
+
+1. For us-east-1 region the AMI for Kubernetes 1.12 is "ami-0200e65a38edfb7e1"
+  https://docs.aws.amazon.com/eks/latest/userguide/update-stack.html
+
+2.  "Enable DNS support"
+
+3.  "Enable DNS hostname "
+
+4. If either or both of the DNS hostname and DNS resolution support is set to false, the following occurs:
+- Instances with a public IP address do not receive corresponding public DNS hostnames.
+- The Amazon-provided DNS server cannot resolve Amazon-provided private DNS hostnames.
+- Instances receive custom private DNS hostnames if there is a custom domain name in the DHCP options set. If you are not using the Amazon-provided DNS server, your custom domain name servers must resolve the hostname as appropriate.
+For reference:
+- https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-support
+
+
+##########################################################################################################
