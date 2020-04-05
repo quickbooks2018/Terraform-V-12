@@ -19,9 +19,18 @@ eksctl utils associate-iam-oidc-provider \
 
 # Create an IAM policy called ALBIngressControllerIAMPolicy for the ALB Ingress Controller pod that allows it to make calls to AWS APIs on your behalf. Use the following AWS CLI command to create the IAM policy in your AWS account. You can view the policy document on GitHub.
 
-aws iam create-policy \
-    --policy-name ALBIngressControllerIAMPolicy \
-    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json
+#aws iam create-policy \
+#    --policy-name ALBIngressControllerIAMPolicy \
+#    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json
+
+curl -# -LO https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json
+
+sleep 10
+
+aws iam create-policy --policy-name ALBIngressControllerIAMPolicy --policy-document file://iam-policy.json
+
+
+
 
 # Create a Kubernetes service account named alb-ingress-controller in the kube-system namespace, a cluster role, and a cluster role binding for the ALB Ingress Controller to use with the following command. If you don't have kubectl installed, complete the instructions in Installing kubectl to install it.
 
@@ -37,20 +46,20 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingre
 
 # https://stackoverflow.com/questions/47313778/find-role-being-used-on-server-from-aws-cli
 
-#eksctl create iamserviceaccount \
-#    --region $REGION \
-#    --name alb-ingress-controller \
-#    --namespace kube-system \
-#    --cluster $CLUSTER_NAME \
-#    --attach-policy-arn arn:$POLICY_ARN:policy/ALBIngressControllerIAMPolicy \
-#    --override-existing-serviceaccounts \
-#    --approve
+eksctl create iamserviceaccount \
+    --region $REGION \
+    --name alb-ingress-controller \
+    --namespace kube-system \
+    --cluster $CLUSTER_NAME \
+    --attach-policy-arn arn:$POLICY_ARN:policy/ALBIngressControllerIAMPolicy \
+    --override-existing-serviceaccounts \
+    --approve
 
 # Create an IAM role for the ALB ingress controller and attach the role to the service account created in the previous step. If you didn't create your cluster with eksctl, then use the instructions on the AWS Management Console or AWS CLI tabs
 # https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
 
-kubectl annotate serviceaccount -n kube-system alb-ingress-controller \
-eks.amazonaws.com/role-arn=arn:aws:iam::$ACCOUNT_ID:role/alb-ingress-controller
+# kubectl annotate serviceaccount -n kube-system alb-ingress-controller \
+# eks.amazonaws.com/role-arn=arn:aws:iam::$ACCOUNT_ID:role/alb-ingress-controller
 
 
 
