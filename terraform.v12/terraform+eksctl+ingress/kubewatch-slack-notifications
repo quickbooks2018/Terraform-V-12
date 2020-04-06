@@ -1,0 +1,6 @@
+# https://github.com/bitnami/charts/tree/master/bitnami/kubewatch
+
+# Kubewatch setup in 10 sec single command
+
+helm install kubewatch bitnami/kubewatch \
+--set=slack.channel="devops",slack.token="SIMPLY-PUT-YOUR-TOKEN-HERE-ALL-NOTIFICATIONS-WILL-BE-IN-YOUR-SLACK-CHANNEL-POD-DELETE-CREATE--->https://github.com/bitnami/charts/tree/master/bitnami/kubewatch"
