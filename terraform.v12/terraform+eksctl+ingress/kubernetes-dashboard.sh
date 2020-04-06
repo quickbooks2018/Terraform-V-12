@@ -1,6 +1,6 @@
 #!/bin/bash
 #Purpose Kubernetes Automated DashBoard
-#Maintaner: muhammad.asim@cloudelligent.com
+#Maintaner: quickbooks2018@gmail.com
 #OS: Ubuntu-18/16/AmazonLinux/CentOS
 
 CUSTER_NAME="cloudelligent-eks"
