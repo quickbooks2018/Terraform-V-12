@@ -87,7 +87,8 @@ aws-iam-authenticator -i $CUSTER_NAME token | jq -r .status.token
 
 echo -e "\nAfter 10 seconds access your kubernetes dashboard\n"
 echo -e "\nLog in URL\n"
-echo -e "\nhttp://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/n"
+
+echo -e "\n http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/ \n"
 
 for (( i=1; i<=10; i=i+1 ))
 do
