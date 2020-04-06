@@ -96,6 +96,6 @@ sleep 1
 echo $i
 done
 
-kubectl proxy  &
+kubectl proxy  8001
 
 #END
