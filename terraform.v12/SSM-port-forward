@@ -1,0 +1,125 @@
+#!/bin/bash
+# Maintainer: Muhammad-Asim
+# Purpose: SSM-PORT-FORWARD
+
+### Requirement ### Please Install the SSM-SESSION MANAGER PLUGIN & then RUN the script & check your instance in AWS SSM available or not
+############################################################################################################################
+# Download the installer using the following URL:
+
+# https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html
+
+# For Windows
+# curl -# -LO https://s3.amazonaws.com/session-manager-downloads/plugin/latest/windows/SessionManagerPluginSetup.exe
+
+# Linux Amazon/Linux/Centos
+# curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_64bit/session-manager-plugin.rpm" -o "session-manager-plugin.rpm"
+# sudo yum install -y session-manager-plugin.rpm
+
+# Linux Ubuntu/18/16
+# curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+# sudo dpkg -i session-manager-plugin.deb
+
+
+#############################################################################################################################
+
+
+
+
+
+# Add the role to an instance profile before attaching the instance profile to the EC2 instance.
+
+
+INSTANCE_PROFILE_NAME="ssm-port-forward-instance-profile"
+
+ROLE_NAME="ssm-port-forward-role"
+
+TRUST="ec2-trust-relationship"
+
+AWS_MANAGED_POLICY="arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+
+
+
+
+
+
+
+
+read -p "Hi, there which EC2 you like to do port-forward???, provide me instanceID": INSTANCE_ID
+
+
+# 1.    If you haven't already created an instance profile, run the following AWS CLI command:
+
+aws iam create-instance-profile --instance-profile-name $INSTANCE_PROFILE_NAME
+
+
+# 2. IAM Role creation & assume role
+
+cat <<EOF >"$TRUST".json
+{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+aws iam create-role --role-name "$ROLE_NAME" --assume-role-policy-document file://"$TRUST".json --description "EC2 Access"
+
+
+
+# 3. Attaching existing AWS Manager Policy for SSM to the Custom Role created
+aws iam attach-role-policy --role-name "$ROLE_NAME" --policy-arn "$AWS_MANAGED_POLICY"
+
+
+# 4. Run the following AWS CLI command to add the role to the instance profile:
+aws iam add-role-to-instance-profile --instance-profile-name "$INSTANCE_PROFILE_NAME" --role-name "$ROLE_NAME"
+
+
+
+# 5. Run the following AWS CLI command to attach the instance profile to the EC2 instance:
+
+aws ec2 associate-iam-instance-profile --iam-instance-profile Name="$INSTANCE_PROFILE_NAME" --instance-id "$INSTANCE_ID"
+
+echo -e "\nPlease wait 75 seconds instance is rebooting, to make sure SSM Agent is refreshed & running\n"
+for (( i=1; i<=15; i=i+1 ))
+do
+sleep 1
+echo $i
+done
+
+# Rebooting the EC2 to make sure, the instance should be quickly a part of SSM
+
+aws ec2 reboot-instances --instance-ids "$INSTANCE_ID"
+
+n=60
+while [ $n -gt 0 ]
+do
+
+echo "Plese wait your instance with ID "$INSTANCE_ID" is rebooting in "$n" seconds"
+sleep 1s
+echo " "
+((n=$n-1))
+
+done
+
+# SSM Plugin Installation
+
+
+
+#aws ssm start-session --target "$INSTANCE_ID" \
+#                       --document-name AWS-StartPortForwardingSession \
+#                       --parameters '{"portNumber":["22"],"localPortNumber":["9000"]}'
+
+
+ # Connection Tip SSH/RDP
+
+ #ssh -i jenkins-demo ec2-user@localhost -p 9000 -vvv                      
+
+
+# END
