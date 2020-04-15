@@ -166,7 +166,7 @@ module "sg7" {
   ingress-rule-4-from-port          = 443
   ingress-rule-4-to-port            = 443
   ingress-rule-4-protocol           = "tcp"
-  ingress-rule-4-cidrs              = ["111.226.111.34/32","115.111.112.17/32","181.111.84.111/32","616.111.188.211/32"]
+  ingress-rule-4-cidrs              = ["111.226.111.34/32","115.111.112.17/32","181.111.84.111/32","111.111.188.211/32"]
   ingress-rule-4-description       = "Allowed IPs"
 
   # Rule-5
