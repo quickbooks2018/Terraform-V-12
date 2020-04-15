@@ -146,7 +146,7 @@ module "sg7" {
   ingress-rule-1-to-port          = 22
   ingress-rule-1-protocol         = "tcp"
   ingress-rule-1-cidrs            = ["111.111.192.47/32"]
-  ingress-rule-1-description      = "Probitra Premises"
+  ingress-rule-1-description      = "Muhammad Asim Premises"
 
   # Rule-2
   ingress-rule-2-from-port          = 945
