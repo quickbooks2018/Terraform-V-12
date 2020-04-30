@@ -10,7 +10,7 @@ module "vpc" {
   source = "../../modules/aws-vpc"
 
   vpc-location                        = "Virginia"
-  namespace                           = "cloudelligent"
+  namespace                           = "infragurus"
   name                                = "vpc"
   stage                               = "dev"
   map_public_ip_on_launch             = "true"

@@ -10,7 +10,7 @@ module "vpc" {
   source = "../../modules/aws-vpc"
 
   vpc-location                        = "Frankfurt"
-  namespace                           = "cloudelligent"
+  namespace                           = "infragurus"
   name                                = "vpc"
   stage                               = "dev"
   map_public_ip_on_launch             = "true"
@@ -25,7 +25,7 @@ module "vpc" {
 
 module "vgw" {
   source = "../../modules/aws-vgw"
-  namespace                   = "cloudelligent"
+  namespace                   = "infragurus"
   stage                       = "dev"
   name                        = "vgw"
   vpc-id                      = module.vpc.vpc-id
@@ -35,7 +35,7 @@ module "vgw" {
 
 module "cgw" {
   source = "../../modules/aws-cgw"
-  namespace                         = "cloudelligent"
+  namespace                         = "infragurus"
   stage                             = "dev"
   name                              = "cgw"
   customer-gateway-static-public-ip = "119.153.177.80"
@@ -43,7 +43,7 @@ module "cgw" {
 
 module "vpn-connection" {
   source = "../../modules/aws-vpn-connection"
-  namespace                       = "cloudelligent"
+  namespace                       = "infragurus"
   stage                           = "dev"
   name                            = "vpn-connection"
   customer-gateway-id             = module.cgw.customer-gateway
@@ -54,7 +54,7 @@ module "vpn-connection" {
 
 module "kms_s3_key" {
   source                  = "../../modules/aws-kms"
-  namespace               = "cloudelligent"
+  namespace               = "infragurus"
   stage                   = "dev"
   name                    = "s3-key"
   deletion_window_in_days = "10"
@@ -62,7 +62,7 @@ module "kms_s3_key" {
 
 module "sg1" {
   source              = "../../modules/aws-sg-cidr"
-  namespace           = "cloudelligent"
+  namespace           = "infragurus"
   stage               = "dev"
   name                = "WebServer"
   tcp_ports           = "80,443"
@@ -73,7 +73,7 @@ module "sg1" {
 
 module "sg2" {
   source                      = "../../modules/aws-sg-ref"
-  namespace                   = "cloudelligent"
+  namespace                   = "infragurus"
   stage                       = "dev"
   name                        = "Web-Ref"
   tcp_ports                   = "22,3306"
@@ -86,7 +86,7 @@ module "sg2" {
 
 module "sg3" {
   source              = "../../modules/aws-sg-cidr"
-  namespace           = "cloudelligent"
+  namespace           = "infragurus"
   stage               = "dev"
   name                = "PriTunl"
   udp_ports           = "12323"
@@ -98,7 +98,7 @@ module "sg3" {
 
 module "sg4" {
   source                  = "../../modules/aws-sg-ref-v2"
-  namespace               = "cloudelligent"
+  namespace               = "infragurus"
   stage                   = "dev"
   name                    = "PriTunl-Ref"
   tcp_ports               = "22,80,443"
@@ -110,7 +110,7 @@ module "sg4" {
 
 module "sg5" {
   source = "../../modules/aws-sg-cidr-v2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "ec2"
   security_group_name           = "ec2"
@@ -126,7 +126,7 @@ module "sg5" {
 
 module "sg6" {
   source                  = "../../modules/aws-sg-ref"
-  namespace               = "cloudelligent"
+  namespace               = "infragurus"
   stage                   = "dev"
   name                    = "Testing-Ref"
   tcp_ports               = "22,433"
@@ -187,7 +187,7 @@ module "sg7" {
 
 module "ec2" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "ec2"
   key_name                      = "ec2-v12"
@@ -209,7 +209,7 @@ module "instance-profile" {
 
 module "ec2-pritunl" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "ec2"
   key_name                      = "ec2-v12"
@@ -225,7 +225,7 @@ module "ec2-pritunl" {
 
 module "rds-mysql" {
   source                                                           = "../../modules/aws-rds-mysql"
-  namespace                                                        = "cloudelligent"
+  namespace                                                        = "infragurus"
   stage                                                            = "dev"
   name                                                             = "wordpress-db"
   rds-name                                                         = "wordpress-db"
@@ -250,17 +250,17 @@ module "rds-mysql" {
 
 module "key-pair" {
   source = "../../modules/aws-ec2-keypair"
-  namespace                       = "cloudelligent"
+  namespace                       = "infragurus"
   stage                           = "dev"
   name                            = "ec2-keypair"
   region                          = "eu-central-1"
-  key-name                        = "cloudelligent-dev-admin"
+  key-name                        = "infragurus-dev-admin"
   public-key                      = file("../../modules/secrets/ec2-v12.pub")
 }
 
 module "iam-role-ec2-secret-manager" {
   source = "../../modules/aws-iam-role"
-  namespace                       = "cloudelligent"
+  namespace                       = "infragurus"
   stage                           = "dev"
   name                            = "ec2-assume-role"
   iam-role-name                   = "ec2-secret-manager-role"
@@ -270,18 +270,18 @@ module "iam-role-ec2-secret-manager" {
 
 module "iam-user-1" {
   source = "../../modules/aws-iam-user"
-  namespace                       = "cloudelligent"
+  namespace                       = "infragurus"
   stage                           = "dev"
   name                            = "asim-arain"
   user-name                       = "asim-arain"
-  policy-name                     = "cloudelligent-dev-bucket-policy"
+  policy-name                     = "infragurus-dev-bucket-policy"
   iam-user-policy                 = file("../../modules/aws-policies/iam-user-s3-policy.json")
 }
 
 
 module "kms_rds-mysql_key" {
   source                  = "../../modules/aws-kms"
-  namespace               = "cloudelligent"
+  namespace               = "infragurus"
   stage                   = "dev"
   name                    = "rds-mysql-key"
   deletion_window_in_days = "10"
@@ -290,7 +290,7 @@ module "kms_rds-mysql_key" {
 
 module "rds_secret" {
   source               = "../../modules/aws-secret-manager"
-  namespace            = "cloudelligent"
+  namespace            = "infragurus"
   stage                = "dev"
   name                 = "Mysql_Password"
   secret-string         = {
@@ -307,7 +307,7 @@ module "rds_secret" {
 
 module "ec2-postgresql-master" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "ec2-postgresql-master"
   key_name                      = "ec2-v12"
@@ -342,7 +342,7 @@ module "ec2-postgresql-master" {
 
 module "ec2-postgresql-slave1" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "ec2-postgresql-slave1"
   key_name                      = "ec2-v12"
@@ -374,7 +374,7 @@ module "ec2-postgresql-slave1" {
 
 module "ec2-postgresql-slave2" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "ec2-postgresql-slave2"
   key_name                      = "ec2-v12"

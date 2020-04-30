@@ -10,7 +10,7 @@ module "vpc" {
   source = "../../modules/aws-vpc"
 
   vpc-location                        = "N.California"
-  namespace                           = "cloudelligent"
+  namespace                           = "infragurus"
   name                                = "vpc"
   stage                               = "dev"
   map_public_ip_on_launch             = "true"
@@ -55,7 +55,7 @@ module "sg-tgw" {
 # EC2-Public
 module "ec2-transit-gateway-public" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "transit-gateway"
   key_name                      = "transit-gateway"
@@ -76,7 +76,7 @@ module "ec2-transit-gateway-public" {
 module "transit-gateway" {
   source                             = "../../modules/aws-transit-gateway"
 
-  transit_gateway_name                                                   = "cloudelligent-transit-gateway"
+  transit_gateway_name                                                   = "infragurus-transit-gateway"
   auto_accept_shared_attachments                                         = "enable"
   amazon_side_asn                                                        = "64512"
   vpn_ecmp_support                                                       = "enable"
@@ -87,7 +87,7 @@ module "transit-gateway" {
   subnet_ids                                                             = module.vpc.private-subnet-ids
   # aws_ec2_transit_gateway_vpc_attachment
   vpc_id                                                                 =  module.vpc.vpc-id
-  aws_ec2_transit_gateway_vpc_attachment_name                            = "cloudelligent-tgw-vpc-dev-attahments"
+  aws_ec2_transit_gateway_vpc_attachment_name                            = "infragurus-tgw-vpc-dev-attahments"
   transit_gateway_default_route_table_association                        = "true"
   transit_gateway_default_route_table_propagation                        = "true"
 }

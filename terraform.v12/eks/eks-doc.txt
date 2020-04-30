@@ -2,7 +2,7 @@
 
 Setup IAM Role for EKS
 
-EKS_Cloudelligent
+EKS_infragurus
 
 
 Custom VPC Setup via Cloudformation
@@ -82,12 +82,12 @@ update our cubeconfig file
 IMPORTANT TO UPDATE YOUR ./kube
 ################################################################
 ### MUST ###
----> aws eks update-kubeconfig --name eks-cloudelligent <---
+---> aws eks update-kubeconfig --name eks-infragurus <---
 ##################################################################
 https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html
 
 
-Added new context arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent to /root/.kube/config
+Added new context arn:aws:eks:us-west-2:898668804275:cluster/eks-infragurus to /root/.kube/config
 
 kubectl config view
 
@@ -96,17 +96,17 @@ clusters:
 - cluster:
     certificate-authority-data: DATA+OMITTED
     server: https://069ED5E1B13D5C06E60F75AFDE032409.sk1.us-west-2.eks.amazonaws.com
-  name: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+  name: arn:aws:eks:us-west-2:898668804275:cluster/eks-infragurus
 contexts:
 - context:
-    cluster: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
-    user: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
-  name: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
-current-context: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+    cluster: arn:aws:eks:us-west-2:898668804275:cluster/eks-infragurus
+    user: arn:aws:eks:us-west-2:898668804275:cluster/eks-infragurus
+  name: arn:aws:eks:us-west-2:898668804275:cluster/eks-infragurus
+current-context: arn:aws:eks:us-west-2:898668804275:cluster/eks-infragurus
 kind: Config
 preferences: {}
 users:
-- name: arn:aws:eks:us-west-2:898668804275:cluster/eks-cloudelligent
+- name: arn:aws:eks:us-west-2:898668804275:cluster/eks-infragurus
   user:
     exec:
       apiVersion: client.authentication.k8s.io/v1alpha1
@@ -116,7 +116,7 @@ users:
       - eks
       - get-token
       - --cluster-name
-      - eks-cloudelligent
+      - eks-infragurus
       command: aws
       env: null
 
@@ -148,7 +148,7 @@ We will be using Cloudformation and we will deploy a stack for our worker nodes.
 
 Note: For Amazon Optimized AMI ---> https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html
 
-ami-0923e4b35a30a5f53 ---> This is Oregon ---> because we deployed our EKS Cluster ---> eks-cloudelligent    in Oregon.
+ami-0923e4b35a30a5f53 ---> This is Oregon ---> because we deployed our EKS Cluster ---> eks-infragurus    in Oregon.
 
 This is our Bucket automatically created in Oregon for this Cloudformation Template ---> cf-templates-7gd89mj54jv6-us-west-2
 
@@ -159,7 +159,7 @@ These are regular ec2-instances you own and pay for it.
 
 #You provisioned the worker nodes from a Cloudformation ---> now time join these nodes ---> Your EKS Cluster ---> We need to apply AWS AUTHENTICATOR configuration map.
 
-arn:aws:iam::898668804275:role/EKS-Cloudelligent-WorkerNodes-NodeInstanceRole-D68SD4Y88L82
+arn:aws:iam::898668804275:role/EKS-infragurus-WorkerNodes-NodeInstanceRole-D68SD4Y88L82
 
 curl -O https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2018-11-07/aws-auth-cm.yaml
 
@@ -204,11 +204,11 @@ kubectl proxy  &
 
 netstat -antp
 
-aws-iam-authenticator -i eks-cloudelligent token
+aws-iam-authenticator -i eks-infragurus token
 
 yum install -y jq
 
-aws-iam-authenticator -i eks-cloudelligent token | jq -r .status.token
+aws-iam-authenticator -i eks-infragurus token | jq -r .status.token
 ###########################################################################################################################################
 
 

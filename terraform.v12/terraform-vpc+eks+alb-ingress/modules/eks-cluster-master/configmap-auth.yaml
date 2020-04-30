@@ -8,7 +8,7 @@ data:
     - "groups":
       - "system:bootstrappers"
       - "system:nodes"
-      "rolearn": "arn:aws:iam::823629353122:role/cloudelligent-dev-eks-workers"
+      "rolearn": "arn:aws:iam::823629353122:role/infragurus-dev-eks-workers"
       "username": "system:node:{{EC2PrivateDNSName}}"
 
 

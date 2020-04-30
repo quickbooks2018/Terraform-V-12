@@ -9,15 +9,15 @@ c terraform apply
 
 3. terraform output -module=module-name
 
-4.terraform plan -target=module.cloudelligent-vpc ---> only plan specific modules
+4.terraform plan -target=module.infragurus-vpc ---> only plan specific modules
 
-5.terraform apply -target=module.cloudelligent-vpc ---> only apply specific modules
+5.terraform apply -target=module.infragurus-vpc ---> only apply specific modules
 
 6.terraform state pull----> ok
 
 7.terraform state push---->danger
 
-8.terraform state rm module.cloudelligent-rds-app1  ----> https://stackoverflow.com/questions/43950097/how-to-import-manual-changes-into-terraform-remote-state
+8.terraform state rm module.infragurus-rds-app1  ----> https://stackoverflow.com/questions/43950097/how-to-import-manual-changes-into-terraform-remote-state
 
 9.terraform show ---> see after deployment
 

@@ -6,7 +6,7 @@ module "vpc-home" {
   source = "../../modules/aws-vpc"
 
   vpc-location                        = "Virginia"
-  namespace                           = "cloudelligent-home"
+  namespace                           = "infragurus-home"
   name                                = "vpc"
   stage                               = "dev"
   map_public_ip_on_launch             = "true"
@@ -53,7 +53,7 @@ module "sg-tgw-vpc-home" {
 
 module "ec2-transit-gateway-private" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "cloudelligent"
+  namespace                     = "infragurus"
   stage                         = "dev"
   name                          = "transit-gateway"
   key_name                      = "transit-gateway-home-vpc"
@@ -78,7 +78,7 @@ module "transit-gateway-vpc-home-attachment" {
   subnet_ids                                                             = module.vpc-home.private-subnet-ids
   # aws_ec2_transit_gateway_vpc_attachment
   vpc_id                                                                 =  module.vpc-home.vpc-id
-  aws_ec2_transit_gateway_vpc_attachment_name                            = "cloudelligent-tgw-vpc-home-attahments"
+  aws_ec2_transit_gateway_vpc_attachment_name                            = "infragurus-tgw-vpc-home-attahments"
   transit_gateway_default_route_table_association                        = "true"
   transit_gateway_default_route_table_propagation                        = "true"
 }

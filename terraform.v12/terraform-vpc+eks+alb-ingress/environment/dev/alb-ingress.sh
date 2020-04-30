@@ -6,7 +6,7 @@ VPC_ID=`terraform output vpc-id`
 #ACCOUNT_ID=`aws sts get-caller-identity | grep -i account | cut -d '"' -f4`
 ACCOUNT_ID=`aws sts get-caller-identity | awk '{print $1}'`
 REGION="us-east-1"
-CLUSTER_NAME="cloudelligent-dev-eks"
+CLUSTER_NAME="infragurus-dev-eks"
 POLICY_ARN=`aws sts get-caller-identity |  awk '{ print $2 }' | grep "iam" | cut -d':' -f2,3,4,5`
 
 
