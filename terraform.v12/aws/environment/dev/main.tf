@@ -229,7 +229,7 @@ module "rds-mysql" {
   stage                                                            = "dev"
   name                                                             = "wordpress-db"
   rds-name                                                         = "wordpress-db"
-  final-snapshot-identifier                                        = "cloudeligent-db-final-snap-shot"
+  final-snapshot-identifier                                        = "infragurus-db-final-snap-shot"
   skip-final-snapshot                                              = "true"
   rds-allocated-storage                                            = "5"
   storage-type                                                     = "gp2"
