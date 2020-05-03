@@ -6,7 +6,7 @@ echo -e "\n$OVPN_DATA\n"
 
 export OVPN_DATA
 
-echo -e "\nMust type -----> no <------ is small letters, otherswise existing data will be lost from Database\n"
+echo -e "\nMust type -----> no <------ in small letters, otherswise existing data will be lost from Database\n"
 
 docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki
 
@@ -30,4 +30,16 @@ docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient $CLI
 # END
 
 #To revoke a client or user
-# docker run --volumes-from ovpn-data --rm -it kylemanna/openvpn ovpn_revokeclient 1234 remove?
+
+# Container Id 03670e2a6bd3 & Container Name is OpenVPN
+
+
+# docker exec -it  03670e2a6bd3 bash
+
+### Run this command inside container ###
+# ovpn_revokeclient qasim remove
+
+# docker exec -it OpenVPN bash
+### Run this command inside container ###
+# ovpn_revokeclient asim remove
+
