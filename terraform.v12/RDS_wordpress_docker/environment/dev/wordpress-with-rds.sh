@@ -18,7 +18,7 @@ WORDPRESS_DB_USER=`aws kms decrypt --region us-east-1 --ciphertext-blob fileb://
 
 
 
-docker-demo run --name wordpress -e WORDPRESS_DB_HOST="vault.cxqbmqcwfxq5.us-east-1.rds.amazonaws.com" -e WORDPRESS_DB_NAME="$WORDPRESS_DB_NAME" -e WORDPRESS_DB_PASSWORD="$WORDPRESS_DB_PASSWORD" -e WORDPRESS_DB_USER="$WORDPRESS_DB_USER" -p 80:80 --restart unless-stopped -d wordpress
+docker run --name wordpress -e WORDPRESS_DB_HOST="vault.cxqbmqcwfxq5.us-east-1.rds.amazonaws.com" -e WORDPRESS_DB_NAME="$WORDPRESS_DB_NAME" -e WORDPRESS_DB_PASSWORD="$WORDPRESS_DB_PASSWORD" -e WORDPRESS_DB_USER="$WORDPRESS_DB_USER" -p 80:80 --restart unless-stopped -d wordpress
 
 
 
