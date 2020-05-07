@@ -1,6 +1,11 @@
 #!/bin/bash
 # Purpose: docker-demo Wordpress with RDS
 # Maintainer: DevOps Muhammad Asim <quickbooks2018@gmail.com>
+# Warning with RDS ---> Do not use the default mysql Database
+
+### First Step ###
+# Create a new database
+# ---> CREATE DATABASE wordpress;
 
 
 
