@@ -155,18 +155,7 @@ resource "aws_subnet" "database" {
     Name     = "${module.label.namespace}-${module.label.stage}-${var.db-subnets-name}-${count.index + 1}"
   }
 }
-
-resource "aws_db_subnet_group" "database" {
-
-  name        = lower(module.label.id)
-  description = "Database subnet group for ${module.label.id}"
-  count = var.create_database_subnet_group && length(var.vpc-database_subnets-cidr) > 0 && var.create_database_subnet_group ? 1 : 0
-  subnet_ids = aws_subnet.database.*.id
-
-  tags = {
-    Name     = "${module.label.namespace}-${module.label.stage}-${var.db-subnets-group-name}-${count.index + 1}"
-  }
-}
+ 
 
 # Database Route-Table For Database-Subnets
 
