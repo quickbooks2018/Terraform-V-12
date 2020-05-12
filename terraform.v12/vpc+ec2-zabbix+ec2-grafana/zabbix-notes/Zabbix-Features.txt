@@ -1,0 +1,31 @@
+# Zabbix server ---> default DB ---> can be mysql, postgress.
+
+# Zabbix proxy  ---> can be HA proxy or any reverse proxy eg. nginx ---> Purpose in large organization, there is lot of data, so it reduces load on Actual Zabbix Server, --->(nginx) than pushed Data to Zabbix Server.
+
+# Pollars ---> Do polling ---> interogate data from devices, pull mechanism, where zabbix fetches data from Hosts(Remote), pollars are processes on Zabbix Server.
+ 
+# Trappers ---> is Storage --->(For Instance Trappers receive data from Zabbix Agents) All info received stored in a Database eg. mysql in our case, might be postgresql etc.
+
+# Note: Whether pushing or pulling of data, all need to stored in persistent storage.
+
+# Protocols supported ---> tcp,udp,ssh,https,https,mysql etc
+
+# Items ---> to measure CPU load, Total Memory, Swap Space etc
+
+# In Zabbix we have templates ---> which Includes Items, Triggers(Eg. If certain threshold reaches send an email or Run certain commands on Remote servers)
+
+# Zabbix Agent is availabe for Linux, Unix & Windows OS ---> give info about Disk Usage | RAM | CPU | Additional Info about monitered resource (eg Humidity Temperature)
+
+# Zabbix Server can also perform auditing & reporting on Remote Hosts ---> eg /etc/passwd ? updated any changes?
+
+# Zabbix we can also monitor application ---> (web apps ---> (push buttons on your website is working fine or not | page latency) or java base ---> eg. tomcat server)
+
+# Zabbix also helps executives to meet SERVICES (SLA)
+
+# Zabbix Supports Authentication ---> (Eg Ldap | AD )
+
+# Zabbix Supports Auto discovery ---> 10.20.0.0/16 Cidr range ---> with zabbix agent
+
+# Zabbix Supports Distributed Monitoring ---> Outside of your network ---> eg Public Ip (Different Regions)
+
+# Zabbix Server default port is 10051  & Zabbix Agent default port is 10050

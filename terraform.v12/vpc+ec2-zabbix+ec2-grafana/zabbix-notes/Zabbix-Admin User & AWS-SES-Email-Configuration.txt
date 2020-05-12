@@ -1,0 +1,13 @@
+### Administration ###
+# Users
+password ---> Admin zabbix 
+default ---> Guests        ---> disabled
+Admin   ---> Administrator ---> enabled
+
+# Change Admin password
+
+# Email
+# https://www.gmass.co/smtp-test
+# https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html
+
+
