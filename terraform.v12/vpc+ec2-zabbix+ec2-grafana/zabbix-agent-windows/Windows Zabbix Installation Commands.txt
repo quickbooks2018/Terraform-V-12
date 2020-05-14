@@ -1,0 +1,32 @@
+# https://www.zabbix.com/documentation/current/manual/concepts/agent
+
+# https://www.zabbix.com/documentation/current/manual/appendix/install/windows_agent#installing_agent_as_windows_service
+
+
+# Download zip Zabbix LTS
+https://www.zabbix.com/download_agents
+
+
+Agent on Windows systems
+Zabbix agent on Windows runs as a Windows service.
+
+
+# Step-1
+# Extract all files from a zip
+
+# Step 2
+# Create a zabbix folder
+
+# Step 3
+# put ---> zabbix_agentd.exe from bin folder & zabbix_agentd.conf  ---> 2 files in zabbix folder
+
+# Step 4
+# Edit zabbix_agentd.conf ---> put the IP address of Zabbix Server
+
+# Step 5
+################################################################
+c:\zabbix\zabbix_agentd.exe -c c:\zabbix\zabbix_agentd.conf -i
+
+c:\zabbix\zabbix_agentd.exe --config zabbix_agentd.conf --start
+
+#################################################################

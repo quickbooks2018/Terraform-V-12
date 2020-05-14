@@ -1,0 +1,2 @@
+# Example
+ssh-keygen -p -m PEM -f monitoring

@@ -98,3 +98,21 @@ module "ec2-grafana" {
   vpc_security_group_ids        = [module.sg2.aws_security_group_default]
 
 }
+
+
+module "ec2-windows" {
+  source                        = "../../modules/aws-ec2"
+  namespace                     = "infragurus"
+  stage                         = "dev"
+  name                          = "windows"
+  key_name                      = "monitoring"
+  user_data                     = file("../../modules/aws-ec2/user-data/grafana/user-data.sh")
+  instance_count                = 1
+  ami                           = "ami-0f7122ac3de6f22b2"
+  instance_type                 = "t3a.medium"
+  associate_public_ip_address   = "true"
+  root_volume_size              = 40
+  subnet_ids                    = module.vpc.public-subnet-ids
+  vpc_security_group_ids        = [module.sg2.aws_security_group_default]
+
+}
