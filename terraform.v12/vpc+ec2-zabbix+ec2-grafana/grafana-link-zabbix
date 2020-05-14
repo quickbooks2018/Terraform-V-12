@@ -1,0 +1,3 @@
+# Zabbix API
+# http://privateip/api_jsonrpc.php      # Eg: http://10.20.1.20/api_jsonrpc.php
+# http://127.0.0.1/zabbix/api_jsonrpc.php # Eg: http://172.31.10.4/zabbix/api_jsonrpc.php
