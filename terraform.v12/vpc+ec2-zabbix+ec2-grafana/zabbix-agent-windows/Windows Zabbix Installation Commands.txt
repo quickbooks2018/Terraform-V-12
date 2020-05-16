@@ -2,7 +2,6 @@
 
 ### ---> This option is also easy by simply install the .msi for Windows
 
-
 # https://www.zabbix.com/documentation/current/manual/concepts/agent
 
 # https://www.zabbix.com/documentation/current/manual/appendix/install/windows_agent#installing_agent_as_windows_service

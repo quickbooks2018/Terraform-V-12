@@ -1,27 +1,47 @@
-# https://www.itzgeek.com/how-tos/linux/centos-how-tos/how-to-install-zabbix-agent-on-centos-7-ubuntu-16-04-debian-8.html
-
-rpm -ivh https://repo.zabbix.com/zabbix/4.0/rhel/7/x86_64/zabbix-release-4.0-1.el7.noarch.rpm
-
-yum install -y zabbix-agent
-
-vim /etc/zabbix/zabbix_agentd.conf
-
-docker ps -a
-
-docker inspect zabbixserver
-
-### ---> put the IP address of docker
-
-systemctl start zabbix-agent
-systemctl status zabbix-agent
-systemctl enable zabbix-agent
-
-
-
 # Agent Installation
 # ---> zabbix.com/download_agents <---
 
-# https://tecadmin.net/install-zabbix-agent-on-centos-rhel/
+###########################################################################################
+AmazonLinux/CentOS/RHEL 7:
+rpm -Uvh https://repo.zabbix.com/zabbix/4.0/rhel/7/x86_64/zabbix-release-4.0-2.el7.noarch.rpm
+
+CentOS/RHEL 6:
+rpm -Uvh https://repo.zabbix.com/zabbix/4.0/rhel/6/x86_64/zabbix-release-4.0-2.el6.noarch.rpm
+
+
+yum install -y zabbix-agent
+
+systemctl start zabbix-agent
+
+systemctl status zabbix-agent
+
+systemctl enable zabbix-agent
+
+#############################################################################################
+
+## Ubuntu 18.04 LTS (Bionic):
+
+wget https://repo.zabbix.com/zabbix/4.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.0-3+bionic_all.deb
+sudo dpkg -i zabbix-release_4.0-3+bionic_all.deb
+
+
+## Ubuntu 16.04 LTS (Xenial):
+
+wget https://repo.zabbix.com/zabbix/4.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.0-3+xenial_all.deb
+sudo dpkg -i zabbix-release_4.0-3+xenial_all.deb
+
+
+
+apt-get install -y zabbix-agent
+
+systemctl start zabbix-agent
+
+systemctl status zabbix-agent
+
+systemctl enable zabbix-agent
+
+
+#############################################################################################
 
 ### --> cat /etc/zabbix/zabbix_agentd.conf
 # This is a configuration file for Zabbix agent daemon (Unix)
