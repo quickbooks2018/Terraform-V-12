@@ -29,7 +29,7 @@ then
 
 # Mariadb Setup
 docker volume create mariadb
-docker run --name mariadb --user=root -e MARIADB_DATABASE=bitnami_wordpress -e MARIADB_ROOT_PASSWORD="ausdermoitoeuropas" -v mariadb:/bitnami --network="infragurus" --restart unless-stopped -d bitnami/mariadb:latest
+docker run --name mariadb -e MARIADB_DATABASE=bitnami_wordpress -e MARIADB_ROOT_PASSWORD="ausdermoitoeuropas" -v mariadb:/bitnami --network="infragurus" --restart unless-stopped -d bitnami/mariadb:latest
 
 # Phpmyadmin Setup
 docker run --name phpmyadmin --network="infragurus" --link mariadb:db -id -p 8080:80 --restart unless-stopped phpmyadmin/phpmyadmin
@@ -37,7 +37,7 @@ docker run --name phpmyadmin --network="infragurus" --link mariadb:db -id -p 808
 
 # Wordpress Setup
 docker volume create wordpress
-docker run --name bitnami-wordpress -u root --network="infragurus" -e WORDPRESS_DATABASE_NAME="bitnami_wordpress" -e WORDPRESS_DATABASE_USER="root" -e WORDPRESS_DATABASE_PASSWORD="ausdermoitoeuropas" --link mariadb:db  -v wordpress:/bitnami --restart unless-stopped -d bitnami/wordpress:latest
+docker run --name bitnami-wordpress --network="infragurus" -e WORDPRESS_DATABASE_NAME="bitnami_wordpress" -e WORDPRESS_DATABASE_USER="root" -e WORDPRESS_DATABASE_PASSWORD="ausdermoitoeuropas" --link mariadb:db  -v wordpress:/bitnami --restart unless-stopped -d bitnami/wordpress:latest
 
 
 
