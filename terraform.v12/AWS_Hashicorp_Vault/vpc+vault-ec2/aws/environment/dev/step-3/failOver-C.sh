@@ -7,8 +7,8 @@
 # DynamoDB Table Creation
 
 REGION="us-east-1"
-dynamodbTable="infragurus-vault"
-domain="infragurus"
+dynamodbTable="cloudgeeks.ca-vault"
+domain="cloudgeeks.ca"
 kms_key_arn="arn:aws:kms:us-east-1:117519388977:key/16c183e5-f38b-43c6-afc2-4a891af21ddd"
 api_addr="https://10.20.4.201:8200"
 cluster_addr="https://10.20.4.144:8201"

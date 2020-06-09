@@ -11,7 +11,7 @@ module "vpc" {
   source = "../../modules/aws-vpc"
 
   vpc-location                        = "Virginia"
-  namespace                           = "infragurus"
+  namespace                           = "cloudgeeks.ca"
   name                                = "vpc"
   stage                               = "docker-dev"
   map_public_ip_on_launch             = "true"
@@ -26,7 +26,7 @@ module "vpc" {
 
 module "sg1" {
   source              = "../../modules/aws-sg-cidr"
-  namespace           = "infragurus"
+  namespace           = "cloudgeeks.ca"
   stage               = "dev"
   name                = "docker"
   tcp_ports           = "22,80,443"
@@ -37,7 +37,7 @@ module "sg1" {
 
 module "sg2" {
   source                  = "../../modules/aws-sg-ref-v2"
-  namespace               = "infragurus"
+  namespace               = "cloudgeeks.ca"
   stage                   = "dev"
   name                    = "docker-Ref"
   tcp_ports               = "80,443,3306"
@@ -62,7 +62,7 @@ module "docker-eip" {
 
 module "ec2-docker" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "infragurus"
+  namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
   name                          = "docker"
   key_name                      = "docker-demo"
@@ -80,11 +80,11 @@ module "ec2-docker" {
 
 module "rds-mysql" {
   source                                                           = "../../modules/aws-rds-mysql"
-  namespace                                                        = "infragurus"
+  namespace                                                        = "cloudgeeks.ca"
   stage                                                            = "dev"
   name                                                             = "wordpress-db"
   rds-name                                                         = "wordpress-db"
-  final-snapshot-identifier                                        = "infragurus-db-final-snap-shot"
+  final-snapshot-identifier                                        = "cloudgeeks.ca-db-final-snap-shot"
   skip-final-snapshot                                              = "true"
   rds-allocated-storage                                            = "5"
   storage-type                                                     = "gp2"

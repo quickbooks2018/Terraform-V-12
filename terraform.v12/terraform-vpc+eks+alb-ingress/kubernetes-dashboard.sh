@@ -1,9 +1,9 @@
 #!/bin/bash
 #Purpose Kubernetes Automated DashBoard
-#Maintaner: muhammad.asim@infragurus.com
+#Maintaner: muhammad.asim@cloudgeeks.ca.com
 #OS: Ubuntu-18/16/AmazonLinux/CentOS
 
-CUSTER_NAME="infragurus-eks"
+CUSTER_NAME="cloudgeeks.ca-eks"
 
 DIR="$PWD/Kubernetes-DashBoard"
 

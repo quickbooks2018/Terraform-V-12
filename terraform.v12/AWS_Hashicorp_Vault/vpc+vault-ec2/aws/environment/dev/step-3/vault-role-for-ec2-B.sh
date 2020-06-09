@@ -18,7 +18,7 @@ TRUST="ec2-trust-relationship"
 VAULT_KMS_POLICY_NAME="vault-kms"
 VAULT_KMS_ARN="arn:aws:iam::$ACCOUNT:policy/$VAULT_KMS_POLICY_NAME"
 
-DYNAMO_TABLE="infragurus-vault"
+DYNAMO_TABLE="cloudgeeks.ca-vault"
 VAULT_DYNAMODB_POLICY_NAME="vault-dynamodb"
 VAULT_DYNAMODB_POLICY_ARN="arn:aws:iam::$ACCOUNT:policy/$VAULT_DYNAMODB_POLICY_NAME"
 

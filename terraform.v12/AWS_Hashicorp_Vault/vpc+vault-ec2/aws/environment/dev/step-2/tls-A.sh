@@ -7,11 +7,11 @@
 #Define the domain name
 
 # DNS
-DOMAIN='infragurus'
+DOMAIN='cloudgeeks.ca'
 SUBDOMAIN='vault'
-DNS_1="infragurus.com"
+DNS_1="cloudgeeks.ca.com"
 DNS_2="localhost"
-DNS_3="vault.infragurus.com"
+DNS_3="vault.cloudgeeks.ca.com"
 
 # IP
 IP_1="127.0.0.1"

@@ -4,7 +4,7 @@
 # Create a Key from AWS Console
 
 ALIAS_NAME_KMS_KEY_ID='5b7d1d0d-624c-487d-869f-b8298529d678'
-RDS_USER='infragurus'
+RDS_USER='cloudgeeks.ca'
 RDS_PASSWORD='123456789'
 RDS_DATABASE_NAME='wordpress'
 

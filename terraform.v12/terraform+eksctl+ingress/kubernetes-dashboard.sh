@@ -3,7 +3,7 @@
 #Maintaner: quickbooks2018@gmail.com
 #OS: Ubuntu-18/16/AmazonLinux/CentOS
 
-CUSTER_NAME="infragurus-eks"
+CUSTER_NAME="cloudgeeks.ca-eks"
 
 DIR="$PWD/Kubernetes-DashBoard"
 

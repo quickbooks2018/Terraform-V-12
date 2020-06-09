@@ -12,9 +12,9 @@ systemctl status docker
 
 # vault Container
 
-docker network create infragurus
+docker network create cloudgeeks.ca
 
-docker run --name vault -d --network=infragurus --user=root -v /root/vault:/var/vault_home -p 8080:8080 -v $(which docker):/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v /root:/root --restart always vault/vault:lts
+docker run --name vault -d --network=cloudgeeks.ca --user=root -v /root/vault:/var/vault_home -p 8080:8080 -v $(which docker):/usr/bin/docker -v /var/run/docker.sock:/var/run/docker.sock -v /root:/root --restart always vault/vault:lts
 
 # Nginx Container
 
@@ -52,11 +52,11 @@ yum install -y vim 2> /dev/null
 echo '
 server {
   listen 80;
-  server_name vault.infragurus.com;
+  server_name vault.cloudgeeks.ca.com;
   return 301 https://$host$request_uri;
 }
 server {
-  server_name vault.infragurus.com;
+  server_name vault.cloudgeeks.ca.com;
   listen 443 ssl;
   ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
   ssl_certificate_key /etc/ssl/certs/nginx-selfsigned.key;
@@ -82,7 +82,7 @@ location / {
 }' >  ~/nginx/conf.d/server.conf
 
 #8
-docker run --name nginx --network=infragurus --restart unless-stopped -v ~/ssl/certs:/etc/ssl/certs -v ~/nginx/conf.d:/etc/nginx/conf.d -p 443:443 -p 80:80 -d nginx
+docker run --name nginx --network=cloudgeeks.ca --restart unless-stopped -v ~/ssl/certs:/etc/ssl/certs -v ~/nginx/conf.d:/etc/nginx/conf.d -p 443:443 -p 80:80 -d nginx
 
 
 #END

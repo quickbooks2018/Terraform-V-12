@@ -10,7 +10,7 @@ module "vpc" {
   source = "../../modules/aws-vpc"
 
   vpc-location                        = "Virginia"
-  namespace                           = "infragurus"
+  namespace                           = "cloudgeeks.ca"
   name                                = "vpc"
   stage                               = "monitoring-dev"
   map_public_ip_on_launch             = "true"
@@ -25,7 +25,7 @@ module "vpc" {
 
 module "sg1" {
   source              = "../../modules/aws-sg-cidr"
-  namespace           = "infragurus"
+  namespace           = "cloudgeeks.ca"
   stage               = "dev"
   name                = "monitoring"
   tcp_ports           = "22,80,443"
@@ -36,7 +36,7 @@ module "sg1" {
 
 module "sg2" {
   source                  = "../../modules/aws-sg-ref-v2"
-  namespace               = "infragurus"
+  namespace               = "cloudgeeks.ca"
   stage                   = "dev"
   name                    = "monitoring-ref"
   tcp_ports               = "22,80,443"
@@ -61,7 +61,7 @@ module "zabbix-eip" {
 
 module "ec2-zabbix" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "infragurus"
+  namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
   name                          = "zabbix"
   key_name                      = "monitoring"
@@ -84,7 +84,7 @@ module "grafana-eip" {
 
 module "ec2-grafana" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "infragurus"
+  namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
   name                          = "grafana"
   key_name                      = "monitoring"
@@ -102,7 +102,7 @@ module "ec2-grafana" {
 
 module "ec2-windows" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "infragurus"
+  namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
   name                          = "windows"
   key_name                      = "monitoring"

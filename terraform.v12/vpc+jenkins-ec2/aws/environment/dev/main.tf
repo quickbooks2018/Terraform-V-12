@@ -10,7 +10,7 @@ module "vpc" {
   source = "../../modules/aws-vpc"
 
   vpc-location                        = "Virginia"
-  namespace                           = "infragurus"
+  namespace                           = "cloudgeeks.ca"
   name                                = "vpc"
   stage                               = "jenkins-dev"
   map_public_ip_on_launch             = "true"
@@ -25,7 +25,7 @@ module "vpc" {
 
 module "sg1" {
   source              = "../../modules/aws-sg-cidr"
-  namespace           = "infragurus"
+  namespace           = "cloudgeeks.ca"
   stage               = "dev"
   name                = "Jenkins"
   tcp_ports           = "22,80,443"
@@ -36,7 +36,7 @@ module "sg1" {
 
 module "sg2" {
   source                  = "../../modules/aws-sg-ref-v2"
-  namespace               = "infragurus"
+  namespace               = "cloudgeeks.ca"
   stage                   = "dev"
   name                    = "Jenkins-Ref"
   tcp_ports               = "22,80,443"
@@ -54,7 +54,7 @@ module "jenkins-eip" {
 
 module "ec2-jenkins" {
   source                        = "../../modules/aws-ec2"
-  namespace                     = "infragurus"
+  namespace                     = "cloudgeeks.ca"
   stage                         = "dev"
   name                          = "jenkins"
   key_name                      = "jenkins-demo"

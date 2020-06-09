@@ -6,7 +6,7 @@ provider "aws" {
 module "vpc" {
   source = "../../modules/vpc"
   vpc-location                        = "Virginia"
-  namespace                           = "infragurus"
+  namespace                           = "cloudgeeks.ca"
   name                                = "vpc"
   stage                               = "dev"
   map_public_ip_on_launch             = "false"
@@ -16,24 +16,24 @@ module "vpc" {
   vpc-public-subnet-cidr              = ["10.20.1.0/24","10.20.2.0/24"]
   vpc-private-subnet-cidr             = ["10.20.4.0/24","10.20.5.0/24"]
   vpc-database_subnets-cidr           = ["10.20.7.0/24", "10.20.8.0/24"]
-  cluster-name                        = "infragurus-dev-eks"
+  cluster-name                        = "cloudgeeks.ca-dev-eks"
 
 }
 
 
 module "key-pair" {
   source = "../../modules/aws-ec2-keypair"
-  namespace                       = "infragurus"
+  namespace                       = "cloudgeeks.ca"
   stage                           = "dev"
   name                            = "ec2-keypair"
   region                          = "us-east-1"
-  key-name                        = "infragurus-eks"
-  public-key                      = file("../../modules/secrets/infragurus-eks.pub")
+  key-name                        = "cloudgeeks.ca-eks"
+  public-key                      = file("../../modules/secrets/cloudgeeks.ca-eks.pub")
 }
 
 module "eks_workers" {
   source                             = "../../modules/eks-cluster-workers"
-  namespace                          = "infragurus"
+  namespace                          = "cloudgeeks.ca"
   stage                              = "dev"
   name                               = "eks"
   instance_type                      = "t2.medium"
@@ -47,8 +47,8 @@ module "eks_workers" {
   # Makesure to check the Latest EKS AMI according to AWS Region
   # https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html
   image_id                           = "ami-0dc7713312a7ec987"
-  cluster_name                       = "infragurus-dev-eks"
-  key_name                           = "infragurus-eks"
+  cluster_name                       = "cloudgeeks.ca-dev-eks"
+  key_name                           = "cloudgeeks.ca-eks"
   cluster_endpoint                   = module.eks_cluster.eks_cluster_endpoint
   cluster_certificate_authority_data = module.eks_cluster.eks_cluster_certificate_authority_data
   cluster_security_group_id          = module.eks_cluster.security_group_id
@@ -62,7 +62,7 @@ module "eks_workers" {
 
 module "eks_cluster" {
   source                       = "../../modules/eks-cluster-master"
-  namespace                    = "infragurus"
+  namespace                    = "cloudgeeks.ca"
   stage                        = "dev"
   name                         = "eks"
   region                       = "us-east-1"

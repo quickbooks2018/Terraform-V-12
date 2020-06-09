@@ -19,25 +19,25 @@ chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 docker-compose --version
 
-NETWORK=`docker network ls | awk '{print $2}' | grep -i "infragurus"`
+NETWORK=`docker network ls | awk '{print $2}' | grep -i "cloudgeeks.ca"`
 if [ "0" == "$?" ]
 then
   echo -e "\n Hey! docker network "$NETWORK" exists \n"
   else
-    docker network create infragurus
+    docker network create cloudgeeks.ca
     fi
 
 # Mariadb Setup
 docker volume create mariadb
-docker run --name mariadb -e MARIADB_DATABASE=bitnami_wordpress -e MARIADB_ROOT_PASSWORD="ausdermoitoeuropas" -v mariadb:/bitnami --network="infragurus" --restart unless-stopped -d bitnami/mariadb:latest
+docker run --name mariadb -e MARIADB_DATABASE=bitnami_wordpress -e MARIADB_ROOT_PASSWORD="ausdermoitoeuropas" -v mariadb:/bitnami --network="cloudgeeks.ca" --restart unless-stopped -d bitnami/mariadb:latest
 
 # Phpmyadmin Setup
-docker run --name phpmyadmin --network="infragurus" --link mariadb:db -id -p 8080:80 --restart unless-stopped phpmyadmin/phpmyadmin
+docker run --name phpmyadmin --network="cloudgeeks.ca" --link mariadb:db -id -p 8080:80 --restart unless-stopped phpmyadmin/phpmyadmin
 
 
 # Wordpress Setup
 docker volume create wordpress
-docker run --name bitnami-wordpress --network="infragurus" -e WORDPRESS_DATABASE_NAME="bitnami_wordpress" -e WORDPRESS_DATABASE_USER="root" -e WORDPRESS_DATABASE_PASSWORD="ausdermoitoeuropas" --link mariadb:db  -v wordpress:/bitnami --restart unless-stopped -d bitnami/wordpress:latest
+docker run --name bitnami-wordpress --network="cloudgeeks.ca" -e WORDPRESS_DATABASE_NAME="bitnami_wordpress" -e WORDPRESS_DATABASE_USER="root" -e WORDPRESS_DATABASE_PASSWORD="ausdermoitoeuropas" --link mariadb:db  -v wordpress:/bitnami --restart unless-stopped -d bitnami/wordpress:latest
 
 
 
@@ -101,7 +101,7 @@ location / {
 }' >  ~/nginx/conf.d/server.conf
 
 #8
-docker run --name nginx --network=infragurus --restart unless-stopped -v ~/ssl/certs:/etc/ssl/certs -v ~/nginx/conf.d:/etc/nginx/conf.d -p 443:443 -p 80:80 -d nginx
+docker run --name nginx --network=cloudgeeks.ca --restart unless-stopped -v ~/ssl/certs:/etc/ssl/certs -v ~/nginx/conf.d:/etc/nginx/conf.d -p 443:443 -p 80:80 -d nginx
 
 
 #END

@@ -7,7 +7,7 @@ resource "aws_emr_cluster" "cluster" {
 {
   "instanceAwsClientConfiguration": {
     "proxyPort": 8099,
-    "proxyHost": "proxy.infragurus.com"
+    "proxyHost": "proxy.cloudgeeks.ca.com"
   }
 }
 EOF
