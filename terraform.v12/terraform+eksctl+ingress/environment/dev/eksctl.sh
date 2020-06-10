@@ -7,7 +7,7 @@ PRIVATE_SUBNET_2=`terraform output private-subnets-ids | sed -n 3p | cut -d'"' -
 PUBLIC_SUBNET_1=`terraform output public-subnet-ids | sed -n 2p | cut -d'"' -f2`
 PUBLIC_SUBNET_2=`terraform output public-subnet-ids | sed -n 3p | cut -d'"' -f2`
 
-KEY_NAME="cloudgeeks.ca-eks"
+KEY_NAME="cloudgeeks-ca-eks"
 
 
 
@@ -20,7 +20,7 @@ aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text
 
 
 eksctl create cluster \
-  --name cloudgeeks.ca-eks \
+  --name cloudgeeks-ca-eks \
   --version 1.15 \
   --vpc-private-subnets=$PRIVATE_SUBNET_1,$PRIVATE_SUBNET_2 \
   --vpc-public-subnets=$PUBLIC_SUBNET_1,$PUBLIC_SUBNET_2 \
@@ -39,7 +39,7 @@ eksctl create cluster \
 # UPDATE YOUR ./kube
 ################################################################
 ### MUST ###
-###---> aws eks update-kubeconfig --name cloudgeeks.ca-eks --region us-east-1 <---
+###---> aws eks update-kubeconfig --name cloudgeeks-ca-eks --region us-east-1 <---
 ##################################################################
 
 #END
