@@ -32,6 +32,7 @@ eksctl create cluster \
   --nodes-min 1 \
   --nodes-max 4 \
   --ssh-access \
+  --node-volume-size 35 \
   --ssh-public-key $KEY_NAME
 
 
