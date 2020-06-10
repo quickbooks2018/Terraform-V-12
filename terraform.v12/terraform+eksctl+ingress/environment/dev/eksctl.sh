@@ -21,7 +21,7 @@ aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text
 
 eksctl create cluster \
   --name cloudgeeks-ca-eks \
-  --version 1.16 \
+  --version 1.15 \
   --vpc-private-subnets=$PRIVATE_SUBNET_1,$PRIVATE_SUBNET_2 \
   --vpc-public-subnets=$PUBLIC_SUBNET_1,$PUBLIC_SUBNET_2 \
   --region us-east-1 \
