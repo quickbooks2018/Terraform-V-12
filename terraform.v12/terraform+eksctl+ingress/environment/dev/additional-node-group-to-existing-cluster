@@ -7,7 +7,7 @@ CLUSTER_NAME="cloudgeeks-ca-eks"
 
 REGION="us-east-1"
 
-VERSION="1.16"
+VERSION="1.15"
 
 KEY_NAME="cloudgeeks-ca-eks"
 
@@ -27,14 +27,16 @@ nodeGroups:
     availabilityZones: ["us-east-1a", "us-east-1b"]
     instanceType: t3a.medium
     desiredCapacity: 3
+    volumeSize: 32
+    VolumeType: gp2
     iam:
-      instanceProfileARN: "arn:aws:iam::902013287642:instance-profile/eksctl-cloudgeeks-ca-eks-nodegroup-worker-NodeInstanceProfile-11ZNTX85AC39E" #Attaching IAM role
-      instanceRoleARN: "arn:aws:iam::902013287642:role/eksctl-cloudgeeks-ca-eks-nodegrou-NodeInstanceRole-S5PIX04ZLT26"
+      instanceProfileARN: "arn:aws:iam::111139436029:instance-profile/eksctl-cloudgeeks-ca-eks-nodegroup-worker-NodeInstanceProfile-18NRW3RWYBGLA" #Attaching IAM role
+      instanceRoleARN: "arn:aws:iam::111139436029:role/eksctl-cloudgeeks-ca-eks-nodegrou-NodeInstanceRole-1ULB8Y0ZCPBTD"
     privateNetworking: true
     securityGroups:
       withShared: true
       withLocal: true
-      attachIDs: ['sg-0cd2b15423e97f8c8', 'sg-061fe935c9bab9dd4']
+      attachIDs: ['sg-04173abd92850c64c', 'sg-045a81aae6d72c611']
     ssh:
       publicKeyName: $KEY_NAME
     kubeletExtraConfig:
