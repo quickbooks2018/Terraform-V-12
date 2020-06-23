@@ -80,7 +80,4 @@ output "database_subnets_cidr_blocks" {
   value       = aws_subnet.database.*.cidr_block
 }
 
-output "database_subnet_group" {
-  description = "ID of database subnet group"
-  value       = concat(aws_db_subnet_group.database.*.id, [""])[0]
-}
+
