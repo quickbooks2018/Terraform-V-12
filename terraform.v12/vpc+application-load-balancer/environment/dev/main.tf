@@ -27,7 +27,7 @@ module "alb-sg" {
   namespace           = "cloudgeeks.ca"
   stage               = "dev"
   name                = "ALB"
-  tcp_ports           = "80,443"
+  tcp_ports           = "80,443,8080"
   cidrs               = ["0.0.0.0/0"]
   security_group_name = "Application-LoadBalancer"
   vpc_id              = module.vpc.vpc-id
