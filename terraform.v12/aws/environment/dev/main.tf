@@ -57,6 +57,7 @@ module "kms_s3_key" {
   namespace               = "cloudgeeks.ca"
   stage                   = "dev"
   name                    = "s3-key"
+  alias                   = "alias/qasim"
   deletion_window_in_days = "10"
 }
 
@@ -284,6 +285,7 @@ module "kms_rds-mysql_key" {
   namespace               = "cloudgeeks.ca"
   stage                   = "dev"
   name                    = "rds-mysql-key"
+  alias                   = "alias/test"
   deletion_window_in_days = "10"
 }
 

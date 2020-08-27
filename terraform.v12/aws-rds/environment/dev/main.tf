@@ -53,6 +53,7 @@ module "kms_rds-mysql_key" {
   namespace               = "cloudgeeks.ca"
   stage                   = "dev"
   name                    = "rds-mysql-key"
+  alias                   = "alias/asim"
   deletion_window_in_days = "10"
 }
 
