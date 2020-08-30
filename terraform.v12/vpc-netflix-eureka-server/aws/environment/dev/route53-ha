@@ -1,0 +1,30 @@
+#!/bin/bash
+# Maintainer <Muhammad Asim quickbooks2018@gmail.com>
+# Update route53 record
+localip=$(curl -fs http://169.254.169.254/latest/meta-data/local-ipv4)
+hostedzoneid="kkkallskshhgAAbbshhAA"
+file=/tmp/record.json
+cat << EOF > $file
+{
+  "Comment": "Update the A record set",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "eureka-server.cloudgeeks.ca.local",
+        "Type": "A",
+        "TTL": 10,
+        "ResourceRecords": [
+          {
+            "Value": "$localip"
+          }
+        ]
+      }
+    }
+  ]
+}
+EOF
+
+aws route53 change-resource-record-sets --hosted-zone-id $hostedzoneid --change-batch file://$file
+
+#END
