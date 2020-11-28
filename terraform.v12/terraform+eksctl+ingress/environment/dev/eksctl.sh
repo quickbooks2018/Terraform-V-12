@@ -33,7 +33,10 @@ eksctl create cluster \
   --nodes-max 4 \
   --ssh-access \
   --node-volume-size 35 \
-  --ssh-public-key $KEY_NAME
+  --ssh-public-key $KEY_NAME \
+  --verbose 3
+  
+  
 
 
 
@@ -42,5 +45,11 @@ eksctl create cluster \
 ### MUST ###
 ###---> aws eks update-kubeconfig --name cloudgeeks-ca-eks --region us-east-1 <---
 ##################################################################
+
+
+# Update Public to Private End Points
+# aws eks update-cluster-config --name cloudgeeks-ca-eks --region us-east-1 \
+# --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
+
 
 #END
