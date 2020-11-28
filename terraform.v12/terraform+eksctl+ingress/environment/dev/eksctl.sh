@@ -47,6 +47,7 @@ eksctl create cluster \
 ##################################################################
 
 
+# https://computingforgeeks.com/easily-setup-kubernetes-cluster-on-aws-with-eks/
 # Update Public to Private End Points
 # aws eks update-cluster-config --name cloudgeeks-ca-eks --region us-east-1 \
 # --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
