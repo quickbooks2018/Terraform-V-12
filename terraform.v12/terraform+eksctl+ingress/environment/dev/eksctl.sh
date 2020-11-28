@@ -52,5 +52,6 @@ eksctl create cluster \
 # aws eks update-cluster-config --name cloudgeeks-ca-eks --region us-east-1 \
 # --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
 
+# https://www.stacksimplify.com/aws-eks/aws-loadbalancers/aws-eks-create-private-nodegroup/
 
 #END
