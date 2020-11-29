@@ -29,9 +29,9 @@ eksctl utils associate-iam-oidc-provider \
 
 #aws iam create-policy \
 #    --policy-name ALBIngressControllerIAMPolicy \
-#    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/iam-policy.json
+#    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.9/docs/examples/iam-policy.json
 
-curl -# -LO https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/iam-policy.json
+curl -# -LO https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.9/docs/examples/iam-policy.json
 
 sleep 10
 
@@ -44,7 +44,7 @@ aws iam create-policy --policy-name ALBIngressControllerIAMPolicy --policy-docum
 
  kubectl create serviceaccount alb-ingress-controller -n kube-system
  
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/rbac-role.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.9/docs/examples/rbac-role.yaml
 
 #eksctl create iamserviceaccount --name alb-ingress-controller --namespace kube-system --cluster $CLUSTER_NAME --attach-policy-arn IAM-policy-arn --approve --override-existing-serviceaccounts
 
@@ -73,7 +73,7 @@ eksctl create iamserviceaccount \
 
 # Deploy the ALB Ingress Controller with the following command.
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/alb-ingress-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.9/docs/examples/alb-ingress-controller.yaml
 
 
 echo -e "\nOpen the ALB Ingress Controller deployment manifest for editing with the following command\n"
