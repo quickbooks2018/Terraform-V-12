@@ -6,6 +6,7 @@
 #################################################################
 # https://aws.amazon.com/premiumsupport/knowledge-center/eks-alb-ingress-controller-setup/
 # https://github.com/kubernetes-sigs/aws-load-balancer-controller/releases
+# https://aws.amazon.com/premiumsupport/knowledge-center/eks-alb-ingress-controller-setup/
 
 VPC_ID=`terraform output vpc-id`
 ACCOUNT_ID=`aws sts get-caller-identity | grep -i account | cut -d '"' -f4`
