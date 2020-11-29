@@ -99,5 +99,11 @@ done
 kubectl proxy  8001
 
 # kubectl proxy --address='0.0.0.0' --disable-filter=true
+# SSH Tunnel for Dashboard
+#ssh -i ubuntu.pem -N -L 8888:127.0.0.1:8001 ec2-user@10.11.1.153
+################################################################################################
+#---> ssh -i '/c/Users/Muhammad Asim/Desktop/eks.pem' -N -L 8001:127.0.0.1:8001 ec2-user@10.11.1.153
+#################################################################################################
+#No Changes required in security group
 
 #END
