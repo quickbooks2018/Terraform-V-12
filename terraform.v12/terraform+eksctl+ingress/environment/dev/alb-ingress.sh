@@ -52,7 +52,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingre
 
 # SEARCH ----> IAM ---> POLICY ---> ALBIngressControllerIAMPolicy ---> COPY THE ARN BELOW
 
-# https://stackoverflow.com/questions/47313778/find-role-being-used-on-server-from-aws-cli
+
 
 eksctl create iamserviceaccount \
     --region $REGION \
