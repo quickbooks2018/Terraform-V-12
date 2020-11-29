@@ -1,6 +1,11 @@
 #!/bin/bash
 #Purpose: ALB Ingress Setup
 #Maintainer: Muhammad Asim <quickbooks2018@gmail.com>
+#################################################################
+# Make Sure the LATESTkubernetes-sigs/aws-load-balancer-controller
+#################################################################
+# https://aws.amazon.com/premiumsupport/knowledge-center/eks-alb-ingress-controller-setup/
+# https://github.com/kubernetes-sigs/aws-load-balancer-controller/releases
 
 VPC_ID=`terraform output vpc-id`
 ACCOUNT_ID=`aws sts get-caller-identity | grep -i account | cut -d '"' -f4`
@@ -21,9 +26,9 @@ eksctl utils associate-iam-oidc-provider \
 
 #aws iam create-policy \
 #    --policy-name ALBIngressControllerIAMPolicy \
-#    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json
+#    --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/iam-policy.json
 
-curl -# -LO https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/iam-policy.json
+curl -# -LO https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/iam-policy.json
 
 sleep 10
 
@@ -36,7 +41,7 @@ aws iam create-policy --policy-name ALBIngressControllerIAMPolicy --policy-docum
 
  kubectl create serviceaccount alb-ingress-controller -n kube-system
  
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/rbac-role.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/rbac-role.yaml
 
 #eksctl create iamserviceaccount --name alb-ingress-controller --namespace kube-system --cluster $CLUSTER_NAME --attach-policy-arn IAM-policy-arn --approve --override-existing-serviceaccounts
 
@@ -65,7 +70,7 @@ eksctl create iamserviceaccount \
 
 # Deploy the ALB Ingress Controller with the following command.
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v2.0.1/docs/examples/alb-ingress-controller.yaml
 
 
 echo -e "\nOpen the ALB Ingress Controller deployment manifest for editing with the following command\n"
