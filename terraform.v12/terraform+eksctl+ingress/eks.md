@@ -68,8 +68,7 @@ aws iam attach-role-policy --role-name getting-started-eks-role --policy-arn  ar
 
 # create the cluster VPC
 
-curl https://amazon-eks.s3.us-west-2.amazonaws.com/cloudformation/2020-05-08/amazon-eks-vpc-sample.yaml -o vpc.yaml
-aws cloudformation deploy --template-file vpc.yaml --stack-name getting-started-eks
+curl -# -LO https://github.com/quickbooks2018/Terraform-V-12/raw/master/terraform.v12/terraform-vpc%2Beks%2Balb-ingress/terraform-vpc%2Beks%2Balb-ingress.zip
 
 # grab your stack details 
 aws cloudformation list-stack-resources --stack-name getting-started-eks > stack.json
