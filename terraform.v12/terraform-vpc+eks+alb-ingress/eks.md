@@ -1,195 +1,130 @@
-# Getting Started with EKS
+# Create EKS Cluster & Node Groups
 
-## Amazon CLI
+## Step-00: Introduction
+- Understand about EKS Core Objects
+  - Control Plane
+  - Worker Nodes & Node Groups
+  - Fargate Profiles
+  - VPC
+- Create EKS Cluster
+- Associate EKS Cluster to IAM OIDC Provider
+- Create EKS Node Groups
+- Verify Cluster, Node Groups, EC2 Instances, IAM Policies and Node Groups
 
+
+## Step-01: Create EKS Cluster using eksctl
+- It will take 15 to 20 minutes to create the Cluster Control Plane 
 ```
+# Create Cluster
+eksctl create cluster --name=eksdemo1 \
+                      --region=us-east-1 \
+                      --zones=us-east-1a,us-east-1b \
+                      --without-nodegroup 
 
-# Run Amazon CLI
-docker run -it --rm -v ${PWD}:/work -w /work --entrypoint /bin/sh amazon/aws-cli:2.0.17
-
-cd ./kubernetes/cloud/amazon
-
-yum install jq gzip nano tar git
-```
-
-## Login to AWS
-
-https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
-
-```
-# Access your "My Security Credentials" section in your profile. 
-# Create an access key
-
-aws configure
-
-# Regions
-https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
-
-```
-
-
-# Deploy Cluster with AWS CLI
-
-You can deploy a cluster using multiple ways.  </br>
-We will cover the two fundamental ways.
-
-1) AWS CLI https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
-2) EKS CLI (newer) https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
-
-
-## AWS CLI
-
-Kubernetes needs a service account to manage our Kubernetes cluster <br/>
-In AWS this is an IAM role <br/>
-Lets create one! <br/>
-
-Follow "Create your Amazon EKS cluster IAM role" [here](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html) <br/>
-
-```
-
-# create our role for EKS
-cat > assume-policy.json <<'EOF'
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-
-role_arn=$(aws iam create-role --role-name getting-started-eks-role --assume-role-policy-document file://assume-policy.json | jq .Role.Arn | sed s/\"//g)
-aws iam attach-role-policy --role-name getting-started-eks-role --policy-arn  arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-
-# create the cluster VPC
-
-curl -# -LO https://github.com/quickbooks2018/Terraform-V-12/raw/master/terraform.v12/terraform-vpc%2Beks%2Balb-ingress/terraform-vpc%2Beks%2Balb-ingress.zip
-unzip terraform-vpc+eks+alb-ingress.zip
-cd terraform-vpc+eks+alb-ingress/environment/dev
-terraform init
-terraform apply --auto-approve
-
-# grab your stack details 
-aws cloudformation list-stack-resources --stack-name getting-started-eks > stack.json
-
-# create our cluster
-
-aws eks create-cluster \
---name getting-started-eks \
---role-arn $role_arn \
---resources-vpc-config subnetIds=subnet-063efe1fa0c5d4913,subnet-06f91e563755e2077,subnet-0824d16f8536b3681,securityGroupIds=sg-0960d3a116ba912e1,endpointPublicAccess=true,endpointPrivateAccess=false
-
-aws eks list-clusters
-aws eks describe-cluster --name getting-started-eks
+# Get List of clusters
+eksctl get clusters                  
 ```
 
 
-## Get a kubeconfig for our cluster
+## Step-02: Create & Associate IAM OIDC Provider for our EKS Cluster
+- To enable and use AWS IAM roles for Kubernetes service accounts on our EKS cluster, we must create &  associate OIDC identity provider.
+- To do so using `eksctl` we can use the  below command. 
+- Use latest eksctl version (as on today the latest version is `0.21.0`)
+```                   
+# Template
+eksctl utils associate-iam-oidc-provider \
+    --region region-code \
+    --cluster <cluter-name> \
+    --approve
 
+# Replace with region & cluster name
+eksctl utils associate-iam-oidc-provider \
+    --region us-east-1 \
+    --cluster eksdemo1 \
+    --approve
 ```
 
-aws eks update-kubeconfig --name getting-started-eks --region ap-southeast-2
 
-#grab the config if you want it
-cp ~/.kube/config .
 
-curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+## Step-03: Create EC2 Keypair
+- Create a new EC2 Keypair with name as `kube-demo`
+- This keypair we will use it when creating the EKS NodeGroup.
+- This will help us to login to the EKS Worker Nodes using Terminal.
 
+## Step-04: Create Node Group with additional Add-Ons in Public Subnets
+- These add-ons will create the respective IAM policies for us automatically within our Node Group role.
+ ```
+# Create Public Node Group   
+eksctl create nodegroup --cluster=eksdemo1 \
+                        --region=us-east-1 \
+                        --name=eksdemo1-ng-public1 \
+                        --node-type=t3.medium \
+                        --nodes=2 \
+                        --nodes-min=2 \
+                        --nodes-max=4 \
+                        --node-volume-size=20 \
+                        --ssh-access \
+                        --ssh-public-key=kube-demo \
+                        --managed \
+                        --asg-access \
+                        --external-dns-access \
+                        --full-ecr-access \
+                        --appmesh-access \
+                        --alb-ingress-access 
 ```
 
-## Add nodes to our cluster
+## Step-05: Verify Cluster & Nodes
 
+### Verify NodeGroup subnets to confirm EC2 Instances are in Public Subnet
+- Verify the node group subnet to ensure it created in public subnets
+  - Go to Services -> EKS -> eksdemo -> eksdemo1-ng1-public
+  - Click on Associated subnet in **Details** tab
+  - Click on **Route Table** Tab.
+  - We should see that internet route via Internet Gateway (0.0.0.0/0 -> igw-xxxxxxxx)
+
+### Verify Cluster, NodeGroup in EKS Management Console
+- Go to Services -> Elastic Kubernetes Service -> eksdemo1
+
+### List Worker Nodes
+```
+# List EKS clusters
+eksctl get cluster
+
+# List NodeGroups in a cluster
+eksctl get nodegroup --cluster=<clusterName>
+
+# List Nodes in current kubernetes cluster
+kubectl get nodes -o wide
+
+# Our kubectl context should be automatically changed to new cluster
+kubectl config view --minify
 ```
 
-# create our role for nodes
-role_arn=$(aws iam create-role --role-name getting-started-eks-role-nodes --assume-role-policy-document file://assume-node-policy.json | jq .Role.Arn | sed s/\"//g)
+### Verify Worker Node IAM Role and list of Policies
+- Go to Services -> EC2 -> Worker Nodes
+- Click on **IAM Role associated to EC2 Worker Nodes**
 
-aws iam attach-role-policy --role-name getting-started-eks-role-nodes --policy-arn  arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-aws iam attach-role-policy --role-name getting-started-eks-role-nodes --policy-arn  arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-aws iam attach-role-policy --role-name getting-started-eks-role-nodes --policy-arn  arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+### Verify Security Group Associated to Worker Nodes
+- Go to Services -> EC2 -> Worker Nodes
+- Click on **Security Group** associated to EC2 Instance which contains `remote` in the name.
 
+### Verify CloudFormation Stacks
+- Verify Control Plane Stack & Events
+- Verify NodeGroup Stack & Events
+
+### Login to Worker Node using Keypai kube-demo
+- Login to worker node
 ```
-More details on node permissions [here](https://docs.aws.amazon.com/eks/latest/userguide/worker_node_IAM_role.html)
+# For MAC or Linux or Windows10
+ssh -i kube-demo.pem ec2-user@<Public-IP-of-Worker-Node>
 
-
-More details on instance types to choose from [here](https://aws.amazon.com/ec2/instance-types/)
-
-```
-aws eks create-nodegroup \
---cluster-name getting-started-eks \
---nodegroup-name test \
---node-role $role_arn \
---subnets subnet-0ec47e6ae964a233f \
---disk-size 200 \
---scaling-config minSize=1,maxSize=2,desiredSize=1 \
---instance-types t2.small
+# For Windows 7
+Use putty
 ```
 
-## EKS CTL example
+## Step-06: Update Worker Nodes Security Group to allow all traffic
+- We need to allow `All Traffic` on worker node security group
 
-```
-# Install EKS CTL
-curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-mv /tmp/eksctl /usr/local/bin
-
-# Create SSH key for Node access (if you need it)
-yum install openssh
-mkdir -p ~/.ssh/
-PASSPHRASE="mysuperstrongpassword"
-ssh-keygen -t rsa -b 4096 -N "${PASSPHRASE}" -C "your_email@example.com" -q -f  ~/.ssh/id_rsa
-chmod 400 ~/.ssh/id_rsa*
-
-
-eksctl create cluster --name getting-started-eks \
---region ap-southeast-2 \
---version 1.16 \
---managed \
---node-type t2.small \
---nodes 1 \
---node-volume-size 30 \
---ssh-access \
---ssh-public-key=~/.ssh/id_rsa.pub \
-
-```
-## Create some sample containers
-
-```
-cd ../..
-
-kubectl create ns example-app
-
-# lets create some resources.
-kubectl apply -n example-app -f secrets/secret.yaml
-kubectl apply -n example-app -f configmaps/configmap.yaml
-kubectl apply -n example-app -f deployments/deployment.yaml
-
-# remember to change the `type: LoadBalancer`
-kubectl apply -n example-app -f services/service.yaml
-
-```
-## Cleanup 
-
-```
-
-eksctl delete cluster --name getting-started-eks-1
-
-aws eks delete-nodegroup --cluster-name getting-started-eks --nodegroup-name test
-aws eks delete-cluster --name getting-started-eks
-
-aws iam detach-role-policy --role-name getting-started-eks-role --policy-arn  arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
-aws iam delete-role --role-name getting-started-eks-role
-
-aws iam detach-role-policy --role-name getting-started-eks-role-nodes --policy-arn  arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-aws iam detach-role-policy --role-name getting-started-eks-role-nodes --policy-arn  arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
-aws iam detach-role-policy --role-name getting-started-eks-role-nodes --policy-arn  arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-
-aws iam delete-role --role-name getting-started-eks-role-nodes
-
-aws cloudformation delete-stack --stack-name getting-started-eks
-```
+## Additional References
+- https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
+- https://docs.aws.amazon.com/eks/latest/userguide/create-service-account-iam-policy-and-role.html
