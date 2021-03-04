@@ -47,7 +47,8 @@ resource "aws_launch_template" "aws-launch-template" {
     resource_type = "instance"
 
     tags = {
-      Name = var.ec2-tag
+      Name    = var.ec2-tag
+      service = var.ec2-tag
     }
   }
 }
