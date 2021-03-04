@@ -54,8 +54,6 @@ NODE_IP_ADDRESS="$ipV4"
 USE_LONGNAME=true
 " > /root/rabbitmq/rabbitmq-env.conf
 
-chmod 666 /root/rabbitmq/rabbitmq-env.conf
-
 cat > /root/rabbitmq/enabled_plugins <<'EOF'
 [rabbitmq_management,rabbitmq_peer_discovery_aws,rabbitmq_federation,rabbitmq_prometheus].
 EOF
