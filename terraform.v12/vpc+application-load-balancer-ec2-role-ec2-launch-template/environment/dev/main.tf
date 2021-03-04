@@ -86,7 +86,8 @@ module "rabbitmq-ec2-launch-template" {
   ec2-instance-type                   = "t3a.small"
   security-group-ids                  = [module.rabbitmq-sg.aws_security_group_default]
   ec2-user-data                       = filebase64("../../modules/aws-asg/aws-ec2-lauch-template/user-data.sh")
-  ec2-tag                             = "rabbitmq-cluster"
+  # Note: Mentioned below tag must be rabbitmq  
+  ec2-tag                             = "rabbitmq"
 
 }
 
