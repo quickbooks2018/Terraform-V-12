@@ -1,115 +1,89 @@
 #!/bin/bash
-# Purpose: RabbitMQ Cluster on AWS
 # OS: AmazonLinux
-# https://www.rabbitmq.com/configure.html
+# Purpose: Rabbitmq Cluster Setup on AWS EC2 in docker
+# Maintainer: cloudgeeks.ca
+# https://www.rabbitmq.com/cluster-formation.html#peer-discovery-classic-config
 # https://www.rabbitmq.com/cluster-formation.html#peer-discovery-aws
 # https://hub.docker.com/_/rabbitmq
 # https://github.com/docker-library/rabbitmq/issues/61
-
-# Cluster
 # https://www.rabbitmq.com/clustering.html
-
-# Variables --------------------------------------------------------------------> Hey! Please Update me
-hostname="rabbit-1.cloudgeeks.ca"
-hostedzoneid="Z0155344WOQ603Y4HMQL"
+# Note: Make sure to TAG the EC2 Auto-Scaling Gourp EC2 with --->           service rabbitmq             <--- cluster_formation.aws.instance_tags.service = rabbitmq
 
 # Docker Installation
-yum update -y
 yum install -y docker
 systemctl start docker
 systemctl enable docker
 
+# NETCAT installation
+yum install -y nc
 
-# Configurations
+# USERADD
+useradd rabbitmq
+mkdir -p /root/rabbitmq
 
-mkdir -p rabbitmq/config
 
-cat > rabbitmq/config/rabbitmq.conf <<'EOF'
-loopback_users.guest = false
-listeners.tcp.default = 5672
+# variables section
+environment="dev"
+region=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep -oP '\"region\"[[:space:]]*:[[:space:]]*\"\K[^\"]+')
+export AWS_DEFAULT_REGION=$region
+instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+export hostName
+user="asim"
+password="asim"
+ipV4=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
 
-cluster_formation.peer_discovery_backend = rabbit_peer_discovery_classic_config
-cluster_formation.classic_config.nodes.1 = rabbit@rabbit-1.cloudgeeks.ca
-cluster_formation.classic_config.nodes.2 = rabbit@rabbit-2.cloudgeeks.ca
-cluster_formation.classic_config.nodes.3 = rabbit@rabbit-3.cloudgeeks.ca
+# Rabbitmq Configurations
+echo "
+cluster_formation.peer_discovery_backend = aws
+cluster_formation.aws.region = "$region"
+cluster_formation.aws.use_autoscaling_group = true
+cluster_formation.discovery_retry_limit = 10
+cluster_formation.discovery_retry_interval = 10000
+cluster_formation.aws.instance_tags.service = rabbitmq
+cluster_formation.aws.use_private_ip = false
+cluster_name = cloudgeeks
+log.file.level = debug
+vm_memory_high_watermark.relative = 0.8
+" > /root/rabbitmq/rabbitmq.conf
+
+
+
+echo "
+NODENAME=rabbit@"$HOSTNAME"
+NODE_IP_ADDRESS="$ipV4"
+USE_LONGNAME=true
+" > /root/rabbitmq/rabbitmq-env.conf
+
+chmod 666 /root/rabbitmq/rabbitmq-env.conf
+
+cat > /root/rabbitmq/enabled_plugins <<'EOF'
+[rabbitmq_management,rabbitmq_peer_discovery_aws,rabbitmq_federation,rabbitmq_prometheus].
 EOF
 
 
 
-# Docker run
+chown -R rabbitmq:rabbitmq rabbitmq
 
-docker run --name $hostname --network host -e RABBITMQ_NODENAME=rabbit@"$hostname" -e RABBITMQ_ERLANG_COOKIE=CLOUDGEEKS -e RABBITMQ_DEFAULT_USER="asim" -e RABBITMQ_DEFAULT_PASS="asim" -e RABBITMQ_USE_LONGNAME=true --hostname "$hostname" -p 15672:15672 --restart unless-stopped -id rabbitmq:management
+chmod 777 -R /root/rabbitmq
 
-cd rabbitmq/config
+docker run  --restart unless-stopped --name rabbit --network="host" -v /root/rabbitmq:/etc/rabbitmq --hostname $HOSTNAME -e RABBITMQ_NODENAME=rabbit@"$HOSTNAME" -e NODE_IP_ADDRESS="$ipV4" -e RABBITMQ_USE_LONGNAME=true -e RABBITMQ_DEFAULT_USER=${user} -e RABBITMQ_ERLANG_COOKIE=CLOUDGEEKSCA -e RABBITMQ_DEFAULT_PASS=${password} -e RABBITMQ_DEFAULT_VHOST=cloudgeeks --log-opt max-size=1m --log-opt max-file=1 quickbooks2018/rabbitmq:latest
+while ! nc -vz 127.0.0.1 5672;do echo "Waiting for port" && sleep 5;done
 
-sleep 10
 
-chmod 666 rabbitmq.conf
-
-docker cp rabbitmq.conf "$hostname":/etc/rabbitmq
-
-#enable federation plugin
-
-sleep 20
-
-docker exec -it $hostname rabbitmq-plugins enable rabbitmq_federation
-
-#mirror policy
+while ! nc -vz 127.0.0.1 5672;do echo "Waiting for port" && sleep 5;done
 
 sleep 30
 
-docker exec -it $hostname rabbitmqctl set_policy ha-fed ".*" '{"federation-upstream-set":"all", "ha-sync-mode":"automatic","ha-mode":"nodes", "ha-params":["rabbit@rabbit-1.cloudgeeks.ca","rabbit@rabbit-2.cloudgeeks.ca","rabbit@rabbit-3.cloudgeeks.ca"]}' --priority 1 --apply-to queues
 
-#  Cluster Master Node
+# https://www.rabbitmq.com/parameters.html
+# Note -p is VHOST ---> -e RABBITMQ_DEFAULT_VHOST=cloudgeeks    <<< if you do not set this environment variable RABBITMQ_DEFAULT_VHOST by default it is /
+#docker exec -it rabbit rabbitmq-plugins enable rabbitmq_federation
 
-docker exec -it $hostname rabbitmqctl stop_app
-
-docker exec -it $hostname rabbitmqctl reset
-
-docker exec -it $hostname rabbitmqctl start_app
-
-
-
-#Producer application
-
-#docker run --name producer -it --rm --network host -e RABBIT_HOST="$HOSTNAME" -e RABBIT_PORT=5672 -e RABBIT_USERNAME=asim -e RABBIT_PASSWORD=asim -p 8080:80 quickbooks2018/rabbitmq-producer:latest
-
-#curl -X POST http://localhost:80/publish/cloudgeeks.ca
-
-#curl -X POST http://localhost:80/publish/asim
-
-#Consumer application
-
-#docker run --name consumer -it --rm --network rabbits -e RABBIT_HOST="$HOSTNAME" -e RABBIT_PORT=5672 -e RABBIT_USERNAME=asim -e RABBIT_PASSWORD=asim quickbooks2018/rabbitmq-consumer:latest
-
-# Route53 Section
-
-localip=$(curl -fs http://169.254.169.254/latest/meta-data/local-ipv4)
-file=/tmp/record.json
-
-#  API Service
-
-cat << EOF > $file
-{
-  "Comment": "Update the A record set",
-  "Changes": [
-    {
-      "Action": "UPSERT",
-      "ResourceRecordSet": {
-        "Name": "$hostname",
-        "Type": "A",
-        "TTL": 10,
-        "ResourceRecords": [
-          {
-            "Value": "$localip"
-          }
-        ]
-      }
-    }
-  ]
-}
+sleep 30
+# https://www.rabbitmq.com/vhosts.html
+docker exec -it rabbit bash <<'EOF'
+rabbitmqctl set_policy -p cloudgeeks ha-fed ".*" '{"federation-upstream-set":"all", "ha-sync-mode":"automatic","ha-mode":"all"}' --priority 1 --apply-to queues
 EOF
 
-aws route53 change-resource-record-sets --hosted-zone-id $hostedzoneid --change-batch file://$file
 
 #END
