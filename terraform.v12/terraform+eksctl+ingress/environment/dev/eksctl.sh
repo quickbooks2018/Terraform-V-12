@@ -21,21 +21,23 @@ aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text
 
 eksctl create cluster \
   --name cloudgeeks-ca-eks \
-  --version 1.15 \
+  --version 1.19 \
   --vpc-private-subnets=$PRIVATE_SUBNET_1,$PRIVATE_SUBNET_2 \
   --vpc-public-subnets=$PUBLIC_SUBNET_1,$PUBLIC_SUBNET_2 \
   --region us-east-1 \
   --node-private-networking \
   --nodegroup-name worker \
-  --node-type t2.medium \
+  --node-type t3a.medium \
   --nodes 2 \
   --nodes-min 1 \
   --nodes-max 4 \
   --ssh-access \
-  --node-volume-size 35 \
+  --node-volume-size 30 \
   --ssh-public-key $KEY_NAME \
+  --alb-ingress-access \
+  --managed \
+  --asg-access \
   --verbose 3
-  
   
 
 
