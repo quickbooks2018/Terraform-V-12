@@ -34,6 +34,8 @@ eksctl create cluster \
   --ssh-access \
   --node-volume-size 30 \
   --ssh-public-key $KEY_NAME \
+  --appmesh-access \
+  --full-ecr-access \
   --alb-ingress-access \
   --managed \
   --asg-access \
