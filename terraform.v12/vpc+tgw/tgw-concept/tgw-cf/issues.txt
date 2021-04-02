@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/59286839/cloudformation-route-table-route-propagation-for-tansit-gateway

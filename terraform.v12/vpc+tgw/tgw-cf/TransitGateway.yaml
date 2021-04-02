@@ -1,0 +1,45 @@
+
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  AWSOrganizationId:
+    Type: String
+    Description: AWS Organization ID to share the resources with. Obtain from 'AWS Organizations -> Settings'
+    MinLength: 12
+    MaxLength: 12
+    AllowedPattern: '^o-[a-z0-9]{10,32}$'
+  MasterAccountId:
+    Type: String
+    Description: 12-digt AWS Account ID of AWS Control Tower Master Account.
+    MinLength: 12
+    MaxLength: 12
+    AllowedPattern: '^[0-9]{12}$'
+  PrivateAmazonASN: 
+    Type: String
+    Description: A private Autonomous System Number (ASN) for the Amazon side of a BGP session. Range 64512 to 65534 for 16-bit ASNs and 4200000000 to 4294967294 for 32-bit ASNs.
+    Default: 64520
+    MinLength: 5
+    MaxLength: 10
+    ConstraintDescription: The range is 64512 to 65534 for 16-bit ASNs and 4200000000 to 4294967294 for 32-bit ASNs.
+
+Resources:
+  TransitGateway:
+    Type: "AWS::EC2::TransitGateway"
+    Properties:
+      Description: "TGW Route Integration Test"
+      AmazonSideAsn: !Ref PrivateAmazonASN
+      AutoAcceptSharedAttachments: "enable"
+      DefaultRouteTableAssociation: "enable"
+      DefaultRouteTablePropagation: "enable"
+      DnsSupport: "enable"
+      VpnEcmpSupport: "enable"
+      Tags:
+      - Key: Application
+        Value: !Ref 'AWS::StackId'
+      - Key: Name
+        Value: cloudgeeksca-cf-tgw-us-east-1
+      
+
+Outputs:
+  TransitGateway:
+    Description: Transit Gateway Name
+    Value: !Ref TransitGateway
