@@ -41,6 +41,8 @@ c terraform apply
 
 16. terraform plan -var-file=secrets.tfvars -var-file=dmz.tfvars -target=module.directory-service -out plan
 
+17. terraform plan -lock=false
+
 
 
 #############################################################################################################
