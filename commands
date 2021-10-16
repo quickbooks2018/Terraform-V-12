@@ -43,6 +43,8 @@ c terraform apply
 
 17. terraform plan -lock=false
 
+18. terraform apply -lock=false
+
 
 
 #############################################################################################################
