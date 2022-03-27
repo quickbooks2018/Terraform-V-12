@@ -21,6 +21,8 @@ kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller/
 
 # To install the Helm chart, run the following command:
 
-helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set serviceAccount.create=true --set region=${REGION} --set image.repository=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/amazon/aws-load-balancer-controller --set clusterName=${EKS_CLUSTER}
+helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set serviceAccount.create=true --set region=${REGION} --set image.repository=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/amazon/aws-load-balancer-controller --set clusterName=${EKS_CLUSTER} --set serviceAccount.create=true --set serviceAccount.name=aws-load-balancer-controller
+
+
 
 # END
